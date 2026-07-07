@@ -8,3 +8,9 @@ export interface Download {
   attempts: number;
   updatedAt: string;
 }
+
+export interface DownloadListItem extends Download {
+  courseId: string;
+  courseName: string;
+  materialLabel: string;
+}

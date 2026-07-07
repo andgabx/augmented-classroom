@@ -13,14 +13,7 @@ import { enqueueDownloadsAction } from "@/features/downloads/server/actions";
 import { Button } from "@/components/ui/button";
 import { getCallbackRedirectUri } from "@/lib/redirect-uri";
 import type { FileTypeGroup, PostCategory } from "@/features/materials/types/post";
-import type { DownloadStatus } from "@/features/downloads/types/download";
-
-const DOWNLOAD_STATUS_LABEL: Record<DownloadStatus, string> = {
-  QUEUED: "Na fila",
-  DOWNLOADING: "Baixando...",
-  DONE: "Baixado ✓",
-  ERROR: "Erro",
-};
+import { DOWNLOAD_STATUS_LABEL } from "@/features/downloads/constants";
 
 const CATEGORIES: { value: PostCategory; label: string }[] = [
   { value: "TAREFA", label: "Tarefas" },

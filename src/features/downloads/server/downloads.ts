@@ -3,7 +3,7 @@ import path from "node:path";
 import { pipeline } from "node:stream/promises";
 import { db } from "@/lib/db";
 import { getDriveClient } from "@/lib/classroom";
-import type { Download, DownloadStatus } from "@/features/downloads/types/download";
+import type { Download, DownloadListItem, DownloadStatus } from "@/features/downloads/types/download";
 
 const MATERIALS_ROOT = path.join(process.cwd(), "Materiais");
 
@@ -71,6 +71,35 @@ export function listDownloadsForCourse(courseId: string): Download[] {
     .all(courseId) as unknown as DownloadRow[];
 
   return rows.map(toDownload);
+}
+
+interface DownloadListRow extends DownloadRow {
+  course_id: string;
+  course_name: string;
+  material_title: string | null;
+  post_title: string | null;
+  post_text: string | null;
+}
+
+export function listAllDownloads(): DownloadListItem[] {
+  const rows = db
+    .prepare(
+      `SELECT d.*, c.id as course_id, c.name as course_name,
+              m.title as material_title, p.title as post_title, p.text as post_text
+       FROM downloads d
+       JOIN materials m ON m.id = d.material_id
+       JOIN posts p ON p.id = m.post_id
+       JOIN courses c ON c.id = p.course_id
+       ORDER BY d.updated_at DESC`
+    )
+    .all() as unknown as DownloadListRow[];
+
+  return rows.map((row) => ({
+    ...toDownload(row),
+    courseId: row.course_id,
+    courseName: row.course_name,
+    materialLabel: row.material_title ?? row.post_title ?? row.post_text ?? "Sem título",
+  }));
 }
 
 interface MaterialDownloadContext {
