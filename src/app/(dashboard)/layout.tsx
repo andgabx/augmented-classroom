@@ -22,9 +22,7 @@ export default async function DashboardLayout({
         }}
       />
       <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 py-12">
-          {children}
-        </div>
+        <div className="flex w-full flex-col gap-8 px-6 py-12 lg:px-10">{children}</div>
       </main>
     </div>
   );
