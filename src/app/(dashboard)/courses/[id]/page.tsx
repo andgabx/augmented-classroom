@@ -1,5 +1,6 @@
-import { notFound, redirect } from "next/navigation";
-import { getSession } from "@/features/auth/server/session";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { getCourse } from "@/features/courses/server/courses";
 import {
   hasSyncedMaterials,
@@ -10,6 +11,7 @@ import {
 import { syncCourseMaterialsAction } from "@/features/materials/server/actions";
 import { listDownloadsForCourse } from "@/features/downloads/server/downloads";
 import { enqueueDownloadsAction } from "@/features/downloads/server/actions";
+import { DownloadAllButton } from "@/features/downloads/components/download-all-button";
 import { Button } from "@/components/ui/button";
 import { getCallbackRedirectUri } from "@/lib/redirect-uri";
 import type { FileTypeGroup, PostCategory } from "@/features/materials/types/post";
@@ -49,11 +51,6 @@ export default async function CourseMaterialsPage({
     downloadStatus?: string;
   }>;
 }) {
-  const session = await getSession();
-  if (!session.isLoggedIn) {
-    redirect("/");
-  }
-
   const { id } = await params;
   const course = getCourse(id);
   if (!course) {
@@ -89,7 +86,15 @@ export default async function CourseMaterialsPage({
 
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 py-12">
+    <>
+      <Link
+        href="/courses"
+        className="flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <ArrowLeft className="size-4" />
+        Voltar para turmas
+      </Link>
+
       <div className="flex items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
@@ -185,11 +190,11 @@ export default async function CourseMaterialsPage({
         </Button>
       </form>
 
-      <form action={enqueueDownloadsAction.bind(null, downloadableIds)}>
-        <Button type="submit" size="sm" disabled={downloadableIds.length === 0}>
-          Baixar {downloadableIds.length} arquivo(s)
-        </Button>
-      </form>
+      <DownloadAllButton
+        action={enqueueDownloadsAction.bind(null, downloadableIds)}
+        courseName={course.name}
+        count={downloadableIds.length}
+      />
 
       <section className="flex flex-col gap-3">
         <h2 className="text-sm font-semibold text-muted-foreground">
@@ -228,6 +233,6 @@ export default async function CourseMaterialsPage({
           </div>
         )}
       </section>
-    </div>
+    </>
   );
 }
