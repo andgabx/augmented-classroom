@@ -5,15 +5,13 @@ import {
   File as FileIcon,
   FileText,
   Image as ImageIcon,
-  LayoutGrid,
   Link as LinkIcon,
-  List,
   Presentation,
   Sheet as SheetIcon,
   Video,
   type LucideIcon,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ViewToggle } from "@/components/view-toggle";
 import { DOWNLOAD_STATUS_LABEL } from "@/features/downloads/constants";
 import type { DownloadStatus } from "@/features/downloads/types/download";
 import type { FileTypeGroup, MaterialListItem } from "@/features/materials/types/post";
@@ -51,26 +49,7 @@ export function MaterialsView({ materials }: { materials: MaterialWithStatus[] }
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex justify-end gap-1">
-        <Button
-          type="button"
-          variant={view === "list" ? "secondary" : "ghost"}
-          size="icon-sm"
-          onClick={() => setView("list")}
-          aria-label="Ver em lista"
-        >
-          <List />
-        </Button>
-        <Button
-          type="button"
-          variant={view === "grid" ? "secondary" : "ghost"}
-          size="icon-sm"
-          onClick={() => setView("grid")}
-          aria-label="Ver em blocos"
-        >
-          <LayoutGrid />
-        </Button>
-      </div>
+      <ViewToggle value={view} onChange={setView} />
 
       {view === "grid" ? (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">

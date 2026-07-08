@@ -1,6 +1,6 @@
 import { listCourses, syncCourses } from "@/features/courses/server/courses";
 import { syncCoursesAction } from "@/features/courses/server/actions";
-import { CourseCard } from "@/features/courses/components/course-card";
+import { CoursesView } from "@/features/courses/components/courses-view";
 import { Button } from "@/components/ui/button";
 import { getCallbackRedirectUri } from "@/lib/redirect-uri";
 import type { CourseState } from "@/features/courses/types/course";
@@ -42,31 +42,7 @@ export default async function CoursesPage({
         />
       </form>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold text-muted-foreground">
-          Ativas ({active.length})
-        </h2>
-        {active.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Nenhuma turma ativa.</p>
-        ) : (
-          <div className="flex flex-col gap-2">
-            {active.map((course) => (
-              <CourseCard key={course.id} course={course} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      <details className="flex flex-col gap-3">
-        <summary className="cursor-pointer text-sm font-semibold text-muted-foreground">
-          Arquivadas ({archived.length})
-        </summary>
-        <div className="mt-3 flex flex-col gap-2">
-          {archived.map((course) => (
-            <CourseCard key={course.id} course={course} />
-          ))}
-        </div>
-      </details>
+      <CoursesView active={active} archived={archived} />
     </>
   );
 }
