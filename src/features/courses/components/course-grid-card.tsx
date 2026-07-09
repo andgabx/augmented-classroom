@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { GraduationCap } from "lucide-react";
+import { TeacherAvatars } from "@/features/courses/components/teacher-avatars";
 import type { Course } from "@/features/courses/types/course";
 
 export function CourseGridCard({ course }: { course: Course }) {
@@ -16,6 +17,7 @@ export function CourseGridCard({ course }: { course: Course }) {
         {course.section && (
           <span className="text-xs text-muted-foreground">{course.section}</span>
         )}
+        <TeacherAvatars teachers={course.teachers} />
       </div>
     </Link>
   );

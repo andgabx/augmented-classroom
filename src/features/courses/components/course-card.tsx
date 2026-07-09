@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TeacherAvatars } from "@/features/courses/components/teacher-avatars";
 import type { Course } from "@/features/courses/types/course";
 
 export function CourseCard({ course }: { course: Course }) {
@@ -10,6 +11,7 @@ export function CourseCard({ course }: { course: Course }) {
           <span className="text-sm text-muted-foreground">{course.section}</span>
         )}
       </Link>
+      <TeacherAvatars teachers={course.teachers} />
       <a
         href={course.alternateLink}
         target="_blank"

@@ -5,6 +5,11 @@ export type CourseState =
   | "DECLINED"
   | "SUSPENDED";
 
+export interface CourseTeacher {
+  name: string;
+  photoUrl: string | null;
+}
+
 export interface Course {
   id: string;
   name: string;
@@ -14,4 +19,5 @@ export interface Course {
   alternateLink: string;
   creationTime: string | null;
   updateTime: string | null;
+  teachers: CourseTeacher[];
 }

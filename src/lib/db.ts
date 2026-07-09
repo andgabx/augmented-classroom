@@ -35,6 +35,14 @@ db.exec(`
     update_time TEXT
   );
 
+  CREATE TABLE IF NOT EXISTS course_teachers (
+    course_id TEXT NOT NULL,
+    teacher_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    photo_url TEXT,
+    PRIMARY KEY (course_id, teacher_id)
+  );
+
   CREATE TABLE IF NOT EXISTS topics (
     id TEXT PRIMARY KEY,
     course_id TEXT NOT NULL,
