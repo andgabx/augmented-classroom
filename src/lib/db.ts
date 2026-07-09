@@ -68,4 +68,13 @@ db.exec(`
     thumbnail_url TEXT,
     mime_type TEXT
   );
+
+  CREATE TABLE IF NOT EXISTS downloads (
+    material_id TEXT PRIMARY KEY,
+    status TEXT NOT NULL,
+    local_path TEXT,
+    error_message TEXT,
+    attempts INTEGER NOT NULL DEFAULT 0,
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
