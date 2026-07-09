@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { clearCredentialsAction, logoutAction } from "@/features/auth/server/actions";
+import { shortName } from "@/lib/utils";
 
 interface SidebarUser {
   name: string | null;
@@ -88,13 +89,17 @@ export function Sidebar({ user }: { user: SidebarUser }) {
       <div className="mt-auto flex flex-col gap-1 border-t border-sidebar-border pt-2">
         <div className="flex h-12 items-center overflow-hidden rounded-md px-0.5">
           <Avatar size="lg" className="shrink-0">
-            <AvatarImage src={user.picture ?? undefined} alt={user.name ?? "Usuário"} />
+            <AvatarImage
+              src={user.picture ?? undefined}
+              alt={user.name ?? "Usuário"}
+              referrerPolicy="no-referrer"
+            />
             <AvatarFallback>{initial}</AvatarFallback>
           </Avatar>
           {open && (
             <motion.div {...LABEL_MOTION} className="ml-2 flex min-w-0 flex-col">
               <span className="truncate text-xs font-medium text-sidebar-foreground">
-                {user.name ?? "Conectado"}
+                {user.name ? shortName(user.name) : "Conectado"}
               </span>
               <span className="truncate text-xs text-sidebar-foreground/60">{user.email}</span>
             </motion.div>
