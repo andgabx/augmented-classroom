@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ComponentType } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { ChevronsRight, Download, GraduationCap, LogOut, Trash2 } from "lucide-react";
 import {
   AlertDialog,
@@ -32,10 +32,10 @@ const NAV_ITEMS: { href: string; label: string; icon: ComponentType<{ className?
 ];
 
 const LABEL_MOTION = {
-  layout: true,
   initial: { opacity: 0, y: 8 },
   animate: { opacity: 1, y: 0 },
-  transition: { delay: 0.1 },
+  exit: { opacity: 0, y: 8 },
+  transition: { duration: 0.15 },
 } as const;
 
 export function Sidebar({ user }: { user: SidebarUser }) {
@@ -45,19 +45,22 @@ export function Sidebar({ user }: { user: SidebarUser }) {
 
   return (
     <motion.nav
-      layout
+      initial={false}
+      animate={{ width: open ? 240 : 68 }}
+      transition={{ duration: 0.2, ease: "easeInOut" }}
       className="sticky top-0 flex h-screen shrink-0 flex-col overflow-hidden border-r border-sidebar-border bg-sidebar p-2"
-      style={{ width: open ? 240 : 68 }}
     >
       <div className="mb-3 flex items-center gap-2 border-b border-sidebar-border pb-3">
         <div className="grid size-10 shrink-0 place-content-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
           <GraduationCap className="size-5" />
         </div>
-        {open && (
-          <motion.span {...LABEL_MOTION} className="whitespace-nowrap text-sm font-semibold text-sidebar-foreground">
-            Augmented Classroom
-          </motion.span>
-        )}
+        <AnimatePresence>
+          {open && (
+            <motion.span {...LABEL_MOTION} className="whitespace-nowrap text-sm font-semibold text-sidebar-foreground">
+              Augmented Classroom
+            </motion.span>
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="space-y-1">
@@ -76,11 +79,13 @@ export function Sidebar({ user }: { user: SidebarUser }) {
               <div className="grid size-10 shrink-0 place-content-center">
                 <Icon className="size-5" />
               </div>
-              {open && (
-                <motion.span {...LABEL_MOTION} className="whitespace-nowrap text-sm font-medium">
-                  {label}
-                </motion.span>
-              )}
+              <AnimatePresence>
+                {open && (
+                  <motion.span {...LABEL_MOTION} className="whitespace-nowrap text-sm font-medium">
+                    {label}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </Link>
           );
         })}
@@ -96,14 +101,16 @@ export function Sidebar({ user }: { user: SidebarUser }) {
             />
             <AvatarFallback>{initial}</AvatarFallback>
           </Avatar>
-          {open && (
-            <motion.div {...LABEL_MOTION} className="ml-2 flex min-w-0 flex-col">
-              <span className="truncate text-xs font-medium text-sidebar-foreground">
-                {user.name ? shortName(user.name) : "Conectado"}
-              </span>
-              <span className="truncate text-xs text-sidebar-foreground/60">{user.email}</span>
-            </motion.div>
-          )}
+          <AnimatePresence>
+            {open && (
+              <motion.div {...LABEL_MOTION} className="ml-2 flex min-w-0 flex-col">
+                <span className="truncate text-xs font-medium text-sidebar-foreground">
+                  {user.name ? shortName(user.name) : "Conectado"}
+                </span>
+                <span className="truncate text-xs text-sidebar-foreground/60">{user.email}</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <form action={logoutAction}>
@@ -114,11 +121,13 @@ export function Sidebar({ user }: { user: SidebarUser }) {
             <div className="grid size-10 shrink-0 place-content-center">
               <LogOut className="size-5" />
             </div>
-            {open && (
-              <motion.span {...LABEL_MOTION} className="whitespace-nowrap text-sm font-medium">
-                Sair
-              </motion.span>
-            )}
+            <AnimatePresence>
+              {open && (
+                <motion.span {...LABEL_MOTION} className="whitespace-nowrap text-sm font-medium">
+                  Sair
+                </motion.span>
+              )}
+            </AnimatePresence>
           </button>
         </form>
 
@@ -127,11 +136,13 @@ export function Sidebar({ user }: { user: SidebarUser }) {
             <div className="grid size-10 shrink-0 place-content-center">
               <Trash2 className="size-5" />
             </div>
-            {open && (
-              <motion.span {...LABEL_MOTION} className="whitespace-nowrap text-sm font-medium">
-                Limpar credenciais
-              </motion.span>
-            )}
+            <AnimatePresence>
+              {open && (
+                <motion.span {...LABEL_MOTION} className="whitespace-nowrap text-sm font-medium">
+                  Limpar credenciais
+                </motion.span>
+              )}
+            </AnimatePresence>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -162,11 +173,13 @@ export function Sidebar({ user }: { user: SidebarUser }) {
           <div className="grid size-10 shrink-0 place-content-center">
             <ChevronsRight className={`size-5 transition-transform ${open ? "rotate-180" : ""}`} />
           </div>
-          {open && (
-            <motion.span {...LABEL_MOTION} className="whitespace-nowrap text-sm font-medium">
-              Recolher
-            </motion.span>
-          )}
+          <AnimatePresence>
+            {open && (
+              <motion.span {...LABEL_MOTION} className="whitespace-nowrap text-sm font-medium">
+                Recolher
+              </motion.span>
+            )}
+          </AnimatePresence>
         </button>
       </div>
     </motion.nav>
