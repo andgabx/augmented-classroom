@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import type { Period, TeacherOption } from "@/features/courses/types/course";
 
 const SEARCH_DEBOUNCE_MS = 400;
@@ -13,6 +14,7 @@ export function CoursesFilters({
   teachers: TeacherOption[];
   periods: Period[];
 }) {
+  const t = useTranslations("courses");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -50,7 +52,7 @@ export function CoursesFilters({
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Buscar por nome"
+        placeholder={t("searchPlaceholder")}
         className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
       />
 
@@ -60,7 +62,7 @@ export function CoursesFilters({
           onChange={(e) => setSingleValue("teacherId", e.target.value)}
           className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
         >
-          <option value="">Todos os professores</option>
+          <option value="">{t("allTeachers")}</option>
           {teachers.map((teacher) => (
             <option key={teacher.id} value={teacher.id}>
               {teacher.name}
@@ -75,7 +77,7 @@ export function CoursesFilters({
           onChange={(e) => setSingleValue("periodId", e.target.value)}
           className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
         >
-          <option value="">Todos os períodos</option>
+          <option value="">{t("allPeriods")}</option>
           {periods.map((period) => (
             <option key={period.id} value={period.id}>
               {period.name}

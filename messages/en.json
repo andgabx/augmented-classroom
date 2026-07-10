@@ -16,5 +16,21 @@
     "clearCredentialsDescription": "This deletes the locally saved Client ID/Secret and access token. You will be signed out now and will need to redo the Google credentials setup to use the app again. Classes and materials already synced remain in the local database.",
     "cancel": "Cancel",
     "confirm": "Clear"
+  },
+  "courses": {
+    "title": "Classes",
+    "sync": "Sync",
+    "openInClassroom": "Open in Classroom",
+    "searchPlaceholder": "Search by name",
+    "allTeachers": "All teachers",
+    "allPeriods": "All semesters",
+    "active": "Active ({count})",
+    "archived": "Archived ({count})",
+    "noActiveClasses": "No active classes.",
+    "owner": "(primary)",
+    "backToClasses": "Back to classes",
+    "periodPlaceholder": "Semester (e.g. 2024.1)",
+    "savePeriod": "Save semester",
+    "materialsCount": "Materials ({count})"
   }
 }

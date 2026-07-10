@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ArrowLeft } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { getCourse, listPeriods } from "@/features/courses/server/courses";
 import { setCoursePeriodAction } from "@/features/courses/server/actions";
 import {
@@ -39,6 +40,7 @@ export default async function CourseMaterialsPage({
   }>;
 }) {
   const { id } = await params;
+  const t = await getTranslations("courses");
   const course = getCourse(id);
   if (!course) {
     notFound();
@@ -84,7 +86,7 @@ export default async function CourseMaterialsPage({
         className="flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="size-4" />
-        Voltar para turmas
+        {t("backToClasses")}
       </Link>
 
       <div className="flex items-center justify-between gap-4">
@@ -100,7 +102,7 @@ export default async function CourseMaterialsPage({
               list="periods-list"
               name="periodName"
               defaultValue={course.periodId ?? ""}
-              placeholder="Período (ex: 2024.1)"
+              placeholder={t("periodPlaceholder")}
               className="rounded-lg border border-input bg-background px-3 py-1.5 text-xs text-foreground outline-none focus:border-ring"
             />
             <datalist id="periods-list">
@@ -109,13 +111,13 @@ export default async function CourseMaterialsPage({
               ))}
             </datalist>
             <Button type="submit" variant="outline" size="sm">
-              Salvar período
+              {t("savePeriod")}
             </Button>
           </form>
         </div>
         <form action={syncCourseMaterialsAction.bind(null, id)}>
           <Button type="submit" variant="outline" size="sm">
-            Sincronizar
+            {t("sync")}
           </Button>
         </form>
       </div>
@@ -132,7 +134,7 @@ export default async function CourseMaterialsPage({
 
       <section className="flex flex-col gap-3">
         <h2 className="text-sm font-semibold text-muted-foreground">
-          Materiais ({materials.length})
+          {t("materialsCount", { count: materials.length })}
         </h2>
         <MaterialsView materials={materialsWithStatus} />
       </section>

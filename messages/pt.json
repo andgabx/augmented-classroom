@@ -16,5 +16,21 @@
     "clearCredentialsDescription": "Isso apaga o Client ID/Secret e o token de acesso salvos localmente. Você será desconectado agora e precisará refazer a configuração de credenciais do Google para voltar a usar o aplicativo. Turmas e materiais já sincronizados continuam no banco local.",
     "cancel": "Cancelar",
     "confirm": "Limpar"
+  },
+  "courses": {
+    "title": "Turmas",
+    "sync": "Sincronizar",
+    "openInClassroom": "Abrir no Classroom",
+    "searchPlaceholder": "Buscar por nome",
+    "allTeachers": "Todos os professores",
+    "allPeriods": "Todos os períodos",
+    "active": "Ativas ({count})",
+    "archived": "Arquivadas ({count})",
+    "noActiveClasses": "Nenhuma turma ativa.",
+    "owner": "(titular)",
+    "backToClasses": "Voltar para turmas",
+    "periodPlaceholder": "Período (ex: 2024.1)",
+    "savePeriod": "Salvar período",
+    "materialsCount": "Materiais ({count})"
   }
 }

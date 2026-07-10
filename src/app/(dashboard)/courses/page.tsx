@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import { listCourses, listPeriods, listTeachers, syncCourses } from "@/features/courses/server/courses";
 import { syncCoursesAction } from "@/features/courses/server/actions";
 import { CoursesView } from "@/features/courses/components/courses-view";
@@ -12,6 +13,7 @@ export default async function CoursesPage({
 }: {
   searchParams: Promise<{ q?: string; teacherId?: string; periodId?: string }>;
 }) {
+  const t = await getTranslations("courses");
   const { q, teacherId, periodId } = await searchParams;
 
   if (listCourses().length === 0) {
@@ -27,11 +29,11 @@ export default async function CoursesPage({
     <>
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Turmas
+          {t("title")}
         </h1>
         <form action={syncCoursesAction}>
           <Button type="submit" variant="outline" size="sm">
-            Sincronizar
+            {t("sync")}
           </Button>
         </form>
       </div>

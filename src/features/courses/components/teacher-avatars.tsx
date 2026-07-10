@@ -1,8 +1,12 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { Avatar, AvatarFallback, AvatarGroup, AvatarImage } from "@/components/ui/avatar";
 import { shortName } from "@/lib/utils";
 import type { CourseTeacher } from "@/features/courses/types/course";
 
 export function TeacherAvatars({ teachers }: { teachers: CourseTeacher[] }) {
+  const t = useTranslations("courses");
   if (teachers.length === 0) return null;
 
   return (
@@ -21,7 +25,7 @@ export function TeacherAvatars({ teachers }: { teachers: CourseTeacher[] }) {
       </AvatarGroup>
       <span className="truncate text-xs text-muted-foreground">
         {teachers
-          .map((teacher) => (teacher.isOwner ? `${shortName(teacher.name)} (titular)` : shortName(teacher.name)))
+          .map((teacher) => (teacher.isOwner ? `${shortName(teacher.name)} ${t("owner")}` : shortName(teacher.name)))
           .join(", ")}
       </span>
     </div>

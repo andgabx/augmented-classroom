@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { ViewItems, ViewToggle, type ViewMode } from "@/components/view-toggle";
 import { CourseCard } from "@/features/courses/components/course-card";
 import { CourseGridCard } from "@/features/courses/components/course-grid-card";
 import type { Course } from "@/features/courses/types/course";
 
 export function CoursesView({ active, archived }: { active: Course[]; archived: Course[] }) {
+  const t = useTranslations("courses");
   const [view, setView] = useState<ViewMode>("list");
 
   function renderCourses(courses: Course[]) {
@@ -26,9 +28,11 @@ export function CoursesView({ active, archived }: { active: Course[]; archived: 
       <ViewToggle value={view} onChange={setView} />
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold text-muted-foreground">Ativas ({active.length})</h2>
+        <h2 className="text-sm font-semibold text-muted-foreground">
+          {t("active", { count: active.length })}
+        </h2>
         {active.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Nenhuma turma ativa.</p>
+          <p className="text-sm text-muted-foreground">{t("noActiveClasses")}</p>
         ) : (
           renderCourses(active)
         )}
@@ -36,7 +40,7 @@ export function CoursesView({ active, archived }: { active: Course[]; archived: 
 
       <details className="flex flex-col gap-3">
         <summary className="cursor-pointer text-sm font-semibold text-muted-foreground">
-          Arquivadas ({archived.length})
+          {t("archived", { count: archived.length })}
         </summary>
         <div className="mt-3">{renderCourses(archived)}</div>
       </details>
