@@ -8,6 +8,17 @@ export type CourseState =
 export interface CourseTeacher {
   name: string;
   photoUrl: string | null;
+  isOwner: boolean;
+}
+
+export interface Period {
+  id: string;
+  name: string;
+}
+
+export interface TeacherOption {
+  id: string;
+  name: string;
 }
 
 export interface Course {
@@ -20,4 +31,6 @@ export interface Course {
   creationTime: string | null;
   updateTime: string | null;
   teachers: CourseTeacher[];
+  periodId: string | null;
+  ownerId: string | null;
 }
