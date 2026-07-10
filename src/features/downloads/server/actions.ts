@@ -2,11 +2,17 @@
 
 import { redirect } from "next/navigation";
 import { enqueueDownloads } from "@/features/downloads/server/queue";
+import { clearAllDownloads } from "@/features/downloads/server/downloads";
 import { getCallbackRedirectUri } from "@/lib/redirect-uri";
 
 export async function enqueueDownloadsAction(materialIds: string[]) {
   if (materialIds.length > 0) {
     enqueueDownloads(materialIds, await getCallbackRedirectUri());
   }
+  redirect("/downloads");
+}
+
+export async function clearDownloadsAction() {
+  clearAllDownloads();
   redirect("/downloads");
 }

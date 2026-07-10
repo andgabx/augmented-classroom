@@ -102,6 +102,14 @@ export function listAllDownloads(untitledLabel: string): DownloadListItem[] {
   }));
 }
 
+export function deleteDownload(materialId: string) {
+  db.prepare(`DELETE FROM downloads WHERE material_id = ?`).run(materialId);
+}
+
+export function clearAllDownloads() {
+  db.prepare(`DELETE FROM downloads`).run();
+}
+
 interface MaterialDownloadContext {
   id: string;
   type: string;

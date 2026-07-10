@@ -73,6 +73,11 @@
     "attempt": "(attempt {attempts})",
     "downloadCount": "Download {count} file(s)",
     "downloadingToast": "Downloading {count} file(s) to Materiais/{courseName}/",
+    "clear": "Clear list",
+    "clearTitle": "Clear download history?",
+    "clearDescription": "Removes every item from the list. Files already downloaded stay in Materiais/ — this only clears the history, nothing is deleted from disk.",
+    "clearCancel": "Cancel",
+    "clearConfirm": "Clear",
     "status": {
       "queued": "Queued",
       "downloading": "Downloading...",

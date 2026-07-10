@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { listAllDownloads } from "@/features/downloads/server/downloads";
 import { DownloadsList } from "@/features/downloads/components/downloads-list";
+import { ClearDownloadsButton } from "@/features/downloads/components/clear-downloads-button";
 
 export default async function DownloadsPage() {
   const t = await getTranslations("downloads");
@@ -9,7 +10,10 @@ export default async function DownloadsPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("title")}</h1>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("title")}</h1>
+        {downloads.length > 0 && <ClearDownloadsButton />}
+      </div>
       <DownloadsList initialDownloads={downloads} />
     </>
   );
