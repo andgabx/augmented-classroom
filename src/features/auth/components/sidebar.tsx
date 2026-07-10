@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useTransition, type ComponentType } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useLocale, useTranslations } from "next-intl";
-import { ChevronsRight, Download, GraduationCap, Globe, LogOut, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronsRight, Download, GraduationCap, Globe, LogOut, Settings, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,9 +28,20 @@ interface SidebarUser {
   picture: string | null;
 }
 
-const NAV_ITEMS: { href: string; key: "classes" | "downloads"; icon: ComponentType<{ className?: string }> }[] = [
+const NAV_ITEMS: {
+  href: string;
+  key: "classes" | "downloads" | "settings";
+  icon: ComponentType<{ className?: string }>;
+}[] = [
   { href: "/courses", key: "classes", icon: GraduationCap },
   { href: "/downloads", key: "downloads", icon: Download },
+  { href: "/settings", key: "settings", icon: Settings },
+];
+
+const LYCEUM_SUBITEMS: { href: string; key: "lyceumHistorico" | "lyceumBoletim" | "lyceumFaltas" }[] = [
+  { href: "/lyceum/historico", key: "lyceumHistorico" },
+  { href: "/lyceum/boletim", key: "lyceumBoletim" },
+  { href: "/lyceum/faltas", key: "lyceumFaltas" },
 ];
 
 const LABEL_MOTION = {
@@ -40,8 +51,9 @@ const LABEL_MOTION = {
   transition: { duration: 0.15 },
 } as const;
 
-export function Sidebar({ user }: { user: SidebarUser }) {
+export function Sidebar({ user, lyceumConnected }: { user: SidebarUser; lyceumConnected: boolean }) {
   const [open, setOpen] = useState(true);
+  const [lyceumOpen, setLyceumOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const initial = (user.name ?? user.email ?? "?").charAt(0).toUpperCase();
@@ -105,6 +117,52 @@ export function Sidebar({ user }: { user: SidebarUser }) {
           );
         })}
       </div>
+
+      {lyceumConnected && (
+        <div className="space-y-1">
+          <button
+            type="button"
+            onClick={() => setLyceumOpen((value) => !value)}
+            className="flex h-10 w-full items-center overflow-hidden rounded-md text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent/60"
+          >
+            <div className="grid size-10 shrink-0 place-content-center">
+              <GraduationCap className="size-5" />
+            </div>
+            <AnimatePresence>
+              {open && (
+                <motion.span
+                  {...LABEL_MOTION}
+                  className="flex flex-1 items-center justify-between whitespace-nowrap pr-3 text-sm font-medium"
+                >
+                  Lyceum
+                  <ChevronDown className={`size-4 transition-transform ${lyceumOpen ? "rotate-180" : ""}`} />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+
+          {open && lyceumOpen && (
+            <div className="flex flex-col gap-1 pl-10">
+              {LYCEUM_SUBITEMS.map(({ href, key }) => {
+                const active = pathname === href || pathname.startsWith(`${href}/`);
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`flex h-9 items-center whitespace-nowrap rounded-md px-2 text-sm transition-colors ${
+                      active
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                        : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60"
+                    }`}
+                  >
+                    {tSidebar(key)}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="mt-auto flex flex-col gap-1 border-t border-sidebar-border pt-2">
         <div className="flex h-12 items-center overflow-hidden rounded-md px-0.5">

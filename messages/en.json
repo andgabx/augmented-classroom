@@ -7,6 +7,10 @@
   "sidebar": {
     "classes": "Classes",
     "downloads": "Downloads",
+    "settings": "Settings",
+    "lyceumHistorico": "Academic History",
+    "lyceumBoletim": "Grades",
+    "lyceumFaltas": "Absences",
     "connected": "Connected",
     "userAvatarAlt": "User",
     "signOut": "Sign out",
@@ -106,5 +110,31 @@
     "clientIdLabel": "Client ID",
     "clientSecretLabel": "Client Secret",
     "saveButton": "Save and connect with Google"
+  },
+  "settings": {
+    "title": "Settings",
+    "lyceumTitle": "Lyceum portal",
+    "lyceumIntro": "Connect your Lyceum account to bring grades and academic history into the app. Login opens a Chrome window so you can authenticate directly on your institution's portal.",
+    "tenantLabel": "Institution",
+    "tenantPlaceholder": "e.g. cesar",
+    "tenantHint": "This is the prefix of your Lyceum portal address (https://<institution>.lyceum.com.br).",
+    "connectButton": "Connect with Lyceum",
+    "connectedAs": "Connected as RA {ra}",
+    "disconnectButton": "Disconnect",
+    "errorMissingTenant": "Enter the institution to continue.",
+    "errorLoginFailed": "Couldn't complete the Lyceum login. Try again."
+  },
+  "lyceumAcademico": {
+    "historicoTitle": "Academic History",
+    "boletimTitle": "Grades",
+    "disciplinasTitle": "Courses",
+    "notasTitle": "Grades",
+    "faltasTitle": "Absences",
+    "faltasNote": "Shows whatever absence data the Lyceum grade report exposes. If the portal only returns a count/percentage (no specific days), that's all that shows up here.",
+    "allPeriods": "All semesters",
+    "boletimCurrentOnlyNote": "Lyceum only exposes the current semester's grades — the portal API has no period filter.",
+    "emptyData": "No data.",
+    "sessionExpired": "Your Lyceum session expired. Reconnect to keep seeing your academic data.",
+    "reconnect": "Reconnect in Settings"
   }
 }

@@ -90,6 +90,20 @@ db.exec(`
     attempts INTEGER NOT NULL DEFAULT 0,
     updated_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS lyceum_credentials (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    tenant TEXT NOT NULL,
+    ra TEXT NOT NULL,
+    internal_id TEXT NOT NULL,
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS lyceum_session (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    session_data TEXT NOT NULL,
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
 const courseColumns = db.prepare(`PRAGMA table_info(courses)`).all() as { name: string }[];

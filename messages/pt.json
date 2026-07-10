@@ -7,6 +7,10 @@
   "sidebar": {
     "classes": "Turmas",
     "downloads": "Downloads",
+    "settings": "Configurações",
+    "lyceumHistorico": "Histórico Escolar",
+    "lyceumBoletim": "Boletim",
+    "lyceumFaltas": "Faltas",
     "connected": "Conectado",
     "userAvatarAlt": "Usuário",
     "signOut": "Sair",
@@ -106,5 +110,31 @@
     "clientIdLabel": "Client ID",
     "clientSecretLabel": "Client Secret",
     "saveButton": "Salvar e conectar com Google"
+  },
+  "settings": {
+    "title": "Configurações",
+    "lyceumTitle": "Portal Lyceum",
+    "lyceumIntro": "Conecte sua conta do Lyceum para trazer boletim e histórico para dentro do app. O login abre uma janela do Chrome para você autenticar diretamente no portal da sua instituição.",
+    "tenantLabel": "Instituição",
+    "tenantPlaceholder": "ex.: cesar",
+    "tenantHint": "É o prefixo do endereço do seu portal Lyceum (https://<instituição>.lyceum.com.br).",
+    "connectButton": "Conectar com Lyceum",
+    "connectedAs": "Conectado como RA {ra}",
+    "disconnectButton": "Desconectar",
+    "errorMissingTenant": "Informe a instituição para continuar.",
+    "errorLoginFailed": "Não foi possível concluir o login no Lyceum. Tente novamente."
+  },
+  "lyceumAcademico": {
+    "historicoTitle": "Histórico Escolar",
+    "boletimTitle": "Boletim",
+    "disciplinasTitle": "Disciplinas",
+    "notasTitle": "Notas",
+    "faltasTitle": "Faltas",
+    "faltasNote": "Mostra os dados de falta que o boletim do Lyceum disponibiliza. Se o portal só trouxer contagem/percentual (sem os dias específicos), é só isso que aparece aqui.",
+    "allPeriods": "Todos os períodos",
+    "boletimCurrentOnlyNote": "O Lyceum só disponibiliza o boletim do semestre atual — não há filtro por período na API do portal.",
+    "emptyData": "Sem dados.",
+    "sessionExpired": "Sua sessão do Lyceum expirou. Reconecte para continuar vendo seus dados acadêmicos.",
+    "reconnect": "Reconectar em Configurações"
   }
 }
