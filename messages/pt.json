@@ -32,5 +32,37 @@
     "periodPlaceholder": "Período (ex: 2024.1)",
     "savePeriod": "Salvar período",
     "materialsCount": "Materiais ({count})"
+  },
+  "materials": {
+    "categoryTarefa": "Tarefas",
+    "categoryMaterial": "Materiais",
+    "categoryAviso": "Avisos",
+    "fileTypePdf": "PDF",
+    "fileTypeWord": "Word",
+    "fileTypeSlides": "Slides",
+    "fileTypeSheets": "Planilhas",
+    "fileTypeImage": "Imagens",
+    "fileTypeVideo": "Vídeos",
+    "fileTypeLink": "Links",
+    "fileTypeOther": "Outros",
+    "downloadStatusAll": "Todos",
+    "downloadStatusNew": "Novo",
+    "downloadStatusDownloaded": "Já baixado",
+    "searchPlaceholder": "Buscar por nome",
+    "category": "Categoria",
+    "fileType": "Tipo de arquivo",
+    "topic": "Tópico",
+    "allTopics": "Todos",
+    "downloadStatus": "Status de download",
+    "untitled": "Sem título",
+    "noResults": "Nenhum material encontrado."
+  },
+  "downloads": {
+    "status": {
+      "queued": "Na fila",
+      "downloading": "Baixando...",
+      "done": "Baixado ✓",
+      "error": "Erro"
+    }
   }
 }

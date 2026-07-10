@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DOWNLOAD_STATUS_LABEL } from "@/features/downloads/constants";
+import { useTranslations } from "next-intl";
+import { DOWNLOAD_STATUS_KEY } from "@/features/downloads/constants";
 import type { DownloadListItem } from "@/features/downloads/types/download";
 
 const POLL_INTERVAL_MS = 2000;
 
 export function DownloadsList({ initialDownloads }: { initialDownloads: DownloadListItem[] }) {
+  const tStatus = useTranslations("downloads.status");
   const [downloads, setDownloads] = useState(initialDownloads);
 
   useEffect(() => {
@@ -43,7 +45,7 @@ export function DownloadsList({ initialDownloads }: { initialDownloads: Download
               >
                 <span className="font-medium text-foreground">{item.materialLabel}</span>
                 <span className="text-sm text-muted-foreground">
-                  {DOWNLOAD_STATUS_LABEL[item.status]}
+                  {tStatus(DOWNLOAD_STATUS_KEY[item.status])}
                   {item.status === "DOWNLOADING" && item.attempts > 1 && ` (tentativa ${item.attempts})`}
                   {item.status === "ERROR" && item.errorMessage && ` — ${item.errorMessage}`}
                 </span>

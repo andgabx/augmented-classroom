@@ -11,8 +11,9 @@ import {
   Video,
   type LucideIcon,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { ViewItems, ViewToggle, type ViewMode } from "@/components/view-toggle";
-import { DOWNLOAD_STATUS_LABEL } from "@/features/downloads/constants";
+import { DOWNLOAD_STATUS_KEY } from "@/features/downloads/constants";
 import type { DownloadStatus } from "@/features/downloads/types/download";
 import type { FileTypeGroup, MaterialListItem } from "@/features/materials/types/post";
 
@@ -31,20 +32,27 @@ export interface MaterialWithStatus extends MaterialListItem {
   downloadStatus: DownloadStatus | undefined;
 }
 
-function materialLabel(material: MaterialWithStatus): string {
-  return material.title ?? material.postTitle ?? material.postText ?? "Sem título";
+function materialLabel(material: MaterialWithStatus, untitled: string): string {
+  return material.title ?? material.postTitle ?? material.postText ?? untitled;
 }
 
-function statusMeta(material: MaterialWithStatus): string {
-  const status = material.downloadStatus ? DOWNLOAD_STATUS_LABEL[material.downloadStatus] : "Novo";
+function statusMeta(
+  material: MaterialWithStatus,
+  tMaterials: (key: string) => string,
+  tDownloadStatus: (key: string) => string
+): string {
+  const status = material.downloadStatus
+    ? tDownloadStatus(DOWNLOAD_STATUS_KEY[material.downloadStatus])
+    : tMaterials("downloadStatusNew");
   return `${material.postCategory} · ${material.fileType} · ${status}`;
 }
 
 export function MaterialsView({ materials }: { materials: MaterialWithStatus[] }) {
+  const t = useTranslations("materials");
   const [view, setView] = useState<ViewMode>("list");
 
   if (materials.length === 0) {
-    return <p className="text-sm text-muted-foreground">Nenhum material encontrado.</p>;
+    return <p className="text-sm text-muted-foreground">{t("noResults")}</p>;
   }
 
   return (
@@ -63,6 +71,8 @@ export function MaterialsView({ materials }: { materials: MaterialWithStatus[] }
 }
 
 function MaterialRow({ material }: { material: MaterialWithStatus }) {
+  const t = useTranslations("materials");
+  const tDownloadStatus = useTranslations("downloads.status");
   const Icon = FILE_TYPE_ICON[material.fileType];
 
   return (
@@ -74,14 +84,16 @@ function MaterialRow({ material }: { material: MaterialWithStatus }) {
     >
       <Icon className="size-5 shrink-0 text-muted-foreground" />
       <div className="flex flex-col gap-1">
-        <span className="font-medium text-foreground">{materialLabel(material)}</span>
-        <span className="text-sm text-muted-foreground">{statusMeta(material)}</span>
+        <span className="font-medium text-foreground">{materialLabel(material, t("untitled"))}</span>
+        <span className="text-sm text-muted-foreground">{statusMeta(material, t, tDownloadStatus)}</span>
       </div>
     </a>
   );
 }
 
 function MaterialCard({ material }: { material: MaterialWithStatus }) {
+  const t = useTranslations("materials");
+  const tDownloadStatus = useTranslations("downloads.status");
   const Icon = FILE_TYPE_ICON[material.fileType];
   const [thumbnailFailed, setThumbnailFailed] = useState(false);
   const showThumbnail = Boolean(material.thumbnailUrl) && !thumbnailFailed;
@@ -109,8 +121,10 @@ function MaterialCard({ material }: { material: MaterialWithStatus }) {
         )}
       </div>
       <div className="flex flex-col gap-1">
-        <span className="line-clamp-2 text-sm font-medium text-foreground">{materialLabel(material)}</span>
-        <span className="text-xs text-muted-foreground">{statusMeta(material)}</span>
+        <span className="line-clamp-2 text-sm font-medium text-foreground">
+          {materialLabel(material, t("untitled"))}
+        </span>
+        <span className="text-xs text-muted-foreground">{statusMeta(material, t, tDownloadStatus)}</span>
       </div>
     </a>
   );

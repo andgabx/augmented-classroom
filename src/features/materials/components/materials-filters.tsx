@@ -2,34 +2,47 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import type { FileTypeGroup, PostCategory, Topic } from "@/features/materials/types/post";
 
-const CATEGORIES: { value: PostCategory; label: string }[] = [
-  { value: "TAREFA", label: "Tarefas" },
-  { value: "MATERIAL", label: "Materiais" },
-  { value: "AVISO", label: "Avisos" },
+const CATEGORIES: { value: PostCategory; key: "categoryTarefa" | "categoryMaterial" | "categoryAviso" }[] = [
+  { value: "TAREFA", key: "categoryTarefa" },
+  { value: "MATERIAL", key: "categoryMaterial" },
+  { value: "AVISO", key: "categoryAviso" },
 ];
 
-const FILE_TYPES: { value: FileTypeGroup; label: string }[] = [
-  { value: "PDF", label: "PDF" },
-  { value: "WORD", label: "Word" },
-  { value: "SLIDES", label: "Slides" },
-  { value: "SHEETS", label: "Planilhas" },
-  { value: "IMAGE", label: "Imagens" },
-  { value: "VIDEO", label: "Vídeos" },
-  { value: "LINK", label: "Links" },
-  { value: "OTHER", label: "Outros" },
+const FILE_TYPES: {
+  value: FileTypeGroup;
+  key:
+    | "fileTypePdf"
+    | "fileTypeWord"
+    | "fileTypeSlides"
+    | "fileTypeSheets"
+    | "fileTypeImage"
+    | "fileTypeVideo"
+    | "fileTypeLink"
+    | "fileTypeOther";
+}[] = [
+  { value: "PDF", key: "fileTypePdf" },
+  { value: "WORD", key: "fileTypeWord" },
+  { value: "SLIDES", key: "fileTypeSlides" },
+  { value: "SHEETS", key: "fileTypeSheets" },
+  { value: "IMAGE", key: "fileTypeImage" },
+  { value: "VIDEO", key: "fileTypeVideo" },
+  { value: "LINK", key: "fileTypeLink" },
+  { value: "OTHER", key: "fileTypeOther" },
 ];
 
-const DOWNLOAD_STATUS_OPTIONS = [
-  { value: "", label: "Todos" },
-  { value: "NOVO", label: "Novo" },
-  { value: "BAIXADO", label: "Já baixado" },
+const DOWNLOAD_STATUS_OPTIONS: { value: string; key: "downloadStatusAll" | "downloadStatusNew" | "downloadStatusDownloaded" }[] = [
+  { value: "", key: "downloadStatusAll" },
+  { value: "NOVO", key: "downloadStatusNew" },
+  { value: "BAIXADO", key: "downloadStatusDownloaded" },
 ];
 
 const SEARCH_DEBOUNCE_MS = 400;
 
 export function MaterialsFilters({ topics }: { topics: Topic[] }) {
+  const t = useTranslations("materials");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -81,12 +94,12 @@ export function MaterialsFilters({ topics }: { topics: Topic[] }) {
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Buscar por nome"
+        placeholder={t("searchPlaceholder")}
         className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
       />
 
       <fieldset className="flex flex-col gap-1.5">
-        <legend className="text-sm font-semibold text-muted-foreground">Categoria</legend>
+        <legend className="text-sm font-semibold text-muted-foreground">{t("category")}</legend>
         <div className="flex flex-wrap gap-3">
           {CATEGORIES.map((c) => (
             <label key={c.value} className="flex items-center gap-1.5 text-sm text-foreground">
@@ -95,14 +108,14 @@ export function MaterialsFilters({ topics }: { topics: Topic[] }) {
                 checked={categories.includes(c.value)}
                 onChange={(e) => toggleListValue("category", c.value, e.target.checked)}
               />
-              {c.label}
+              {t(c.key)}
             </label>
           ))}
         </div>
       </fieldset>
 
       <fieldset className="flex flex-col gap-1.5">
-        <legend className="text-sm font-semibold text-muted-foreground">Tipo de arquivo</legend>
+        <legend className="text-sm font-semibold text-muted-foreground">{t("fileType")}</legend>
         <div className="flex flex-wrap gap-3">
           {FILE_TYPES.map((f) => (
             <label key={f.value} className="flex items-center gap-1.5 text-sm text-foreground">
@@ -111,7 +124,7 @@ export function MaterialsFilters({ topics }: { topics: Topic[] }) {
                 checked={fileTypes.includes(f.value)}
                 onChange={(e) => toggleListValue("fileType", f.value, e.target.checked)}
               />
-              {f.label}
+              {t(f.key)}
             </label>
           ))}
         </div>
@@ -119,13 +132,13 @@ export function MaterialsFilters({ topics }: { topics: Topic[] }) {
 
       {topics.length > 0 && (
         <label className="flex flex-col gap-1.5 text-sm text-muted-foreground">
-          Tópico
+          {t("topic")}
           <select
             value={topicId}
             onChange={(e) => setSingleValue("topicId", e.target.value)}
             className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
           >
-            <option value="">Todos</option>
+            <option value="">{t("allTopics")}</option>
             {topics.map((topic) => (
               <option key={topic.id} value={topic.id}>
                 {topic.name}
@@ -136,7 +149,7 @@ export function MaterialsFilters({ topics }: { topics: Topic[] }) {
       )}
 
       <fieldset className="flex flex-col gap-1.5">
-        <legend className="text-sm font-semibold text-muted-foreground">Status de download</legend>
+        <legend className="text-sm font-semibold text-muted-foreground">{t("downloadStatus")}</legend>
         <div className="flex flex-wrap gap-3">
           {DOWNLOAD_STATUS_OPTIONS.map((option) => (
             <label key={option.value} className="flex items-center gap-1.5 text-sm text-foreground">
@@ -146,7 +159,7 @@ export function MaterialsFilters({ topics }: { topics: Topic[] }) {
                 checked={downloadStatus === option.value}
                 onChange={() => setSingleValue("downloadStatus", option.value)}
               />
-              {option.label}
+              {t(option.key)}
             </label>
           ))}
         </div>

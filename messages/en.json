@@ -32,5 +32,37 @@
     "periodPlaceholder": "Semester (e.g. 2024.1)",
     "savePeriod": "Save semester",
     "materialsCount": "Materials ({count})"
+  },
+  "materials": {
+    "categoryTarefa": "Assignments",
+    "categoryMaterial": "Materials",
+    "categoryAviso": "Announcements",
+    "fileTypePdf": "PDF",
+    "fileTypeWord": "Word",
+    "fileTypeSlides": "Slides",
+    "fileTypeSheets": "Spreadsheets",
+    "fileTypeImage": "Images",
+    "fileTypeVideo": "Videos",
+    "fileTypeLink": "Links",
+    "fileTypeOther": "Other",
+    "downloadStatusAll": "All",
+    "downloadStatusNew": "New",
+    "downloadStatusDownloaded": "Downloaded",
+    "searchPlaceholder": "Search by name",
+    "category": "Category",
+    "fileType": "File type",
+    "topic": "Topic",
+    "allTopics": "All",
+    "downloadStatus": "Download status",
+    "untitled": "Untitled",
+    "noResults": "No materials found."
+  },
+  "downloads": {
+    "status": {
+      "queued": "Queued",
+      "downloading": "Downloading...",
+      "done": "Downloaded ✓",
+      "error": "Error"
+    }
   }
 }
