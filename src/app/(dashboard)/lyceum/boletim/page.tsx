@@ -5,6 +5,14 @@ import { LyceumSessionExpiredError } from "@/features/lyceum/server/lyceum-clien
 import { COMMON_EXCLUDED_FIELDS, DynamicTable, LyceumSessionExpiredNotice, toRows } from "@/features/lyceum/components/academic-data";
 
 const FALTAS_PATTERN = /falta|frequenc/i;
+const BOLETIM_EXCLUDED_FIELDS = [
+  "media",
+  "mediaNumerica",
+  "aulasPrevistas",
+  "aulasMinistradas",
+  "codDocente",
+  "situacaoDetalhe",
+];
 
 function notaFor(provas: unknown, codes: string[]): unknown {
   if (!Array.isArray(provas)) return null;
@@ -58,7 +66,12 @@ export default async function LyceumBoletimPage() {
 
       <section className="flex flex-col gap-2">
         <h2 className="text-sm font-semibold text-foreground">{t("notasTitle")}</h2>
-        <DynamicTable data={notas} emptyLabel={t("emptyData")} excludeKeys={COMMON_EXCLUDED_FIELDS} excludePattern={FALTAS_PATTERN} />
+        <DynamicTable
+          data={notas}
+          emptyLabel={t("emptyData")}
+          excludeKeys={[...COMMON_EXCLUDED_FIELDS, ...BOLETIM_EXCLUDED_FIELDS]}
+          excludePattern={FALTAS_PATTERN}
+        />
       </section>
     </>
   );
