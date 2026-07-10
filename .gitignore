@@ -50,3 +50,4 @@ next-env.d.ts
 # claude code
 CLAUDE.md
 .claude/
+skills-lock.json
