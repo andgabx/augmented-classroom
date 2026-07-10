@@ -36,6 +36,8 @@ export default async function CourseMaterialsPage({
     topicId?: string;
     downloadStatus?: string;
     q?: string;
+    dateFrom?: string;
+    dateTo?: string;
   }>;
 }) {
   const { id } = await params;
@@ -48,7 +50,7 @@ export default async function CourseMaterialsPage({
     await syncCourseMaterials(id, await getCallbackRedirectUri());
   }
 
-  const { category, fileType, topicId, downloadStatus, q } = await searchParams;
+  const { category, fileType, topicId, downloadStatus, q, dateFrom, dateTo } = await searchParams;
   const categories = toArray(category) as PostCategory[];
   const fileTypes = toArray(fileType) as FileTypeGroup[];
 
@@ -62,6 +64,8 @@ export default async function CourseMaterialsPage({
     fileType: fileTypes.length ? fileTypes : undefined,
     topicId: topicId || undefined,
     query: q || undefined,
+    dateFrom: dateFrom || undefined,
+    dateTo: dateTo || undefined,
   });
 
   if (downloadStatus === "NOVO") {

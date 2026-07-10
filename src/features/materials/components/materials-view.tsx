@@ -37,7 +37,11 @@ function materialLabel(material: MaterialWithStatus): string {
 
 function statusMeta(material: MaterialWithStatus): string {
   const status = material.downloadStatus ? DOWNLOAD_STATUS_LABEL[material.downloadStatus] : "Novo";
-  return `${material.postCategory} · ${material.fileType} · ${status}`;
+  const parts = [material.postCategory, material.fileType, status];
+  if (material.postCreationTime) {
+    parts.push(new Date(material.postCreationTime).toLocaleDateString("pt-BR"));
+  }
+  return parts.join(" · ");
 }
 
 export function MaterialsView({ materials }: { materials: MaterialWithStatus[] }) {

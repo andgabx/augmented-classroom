@@ -297,6 +297,7 @@ interface MaterialRow {
   post_category: PostCategory;
   post_title: string | null;
   post_text: string | null;
+  post_creation_time: string | null;
 }
 
 function toMaterialListItem(row: MaterialRow): MaterialListItem {
@@ -312,6 +313,7 @@ function toMaterialListItem(row: MaterialRow): MaterialListItem {
     postCategory: row.post_category,
     postTitle: row.post_title,
     postText: row.post_text,
+    postCreationTime: row.post_creation_time,
     fileType: fileTypeGroup(row.type, row.mime_type),
   };
 }
@@ -321,6 +323,8 @@ export interface ListCourseMaterialsFilter {
   fileType?: FileTypeGroup[];
   topicId?: string;
   query?: string;
+  dateFrom?: string;
+  dateTo?: string;
 }
 
 export function listCourseMaterials(
@@ -343,11 +347,19 @@ export function listCourseMaterials(
     const like = `%${filter.query}%`;
     params.push(like, like, like);
   }
+  if (filter.dateFrom) {
+    conditions.push("date(p.creation_time) >= ?");
+    params.push(filter.dateFrom);
+  }
+  if (filter.dateTo) {
+    conditions.push("date(p.creation_time) <= ?");
+    params.push(filter.dateTo);
+  }
 
   const rows = db
     .prepare(
       `SELECT m.id, m.post_id, m.type, m.drive_file_id, m.title, m.alternate_link, m.thumbnail_url, m.mime_type,
-              p.category as post_category, p.title as post_title, p.text as post_text
+              p.category as post_category, p.title as post_title, p.text as post_text, p.creation_time as post_creation_time
        FROM materials m
        JOIN posts p ON p.id = m.post_id
        WHERE ${conditions.join(" AND ")}
