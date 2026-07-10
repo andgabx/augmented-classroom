@@ -134,7 +134,7 @@ const selectDownloadContext = db.prepare(`
   WHERE m.id = ?
 `);
 
-const GOOGLE_EXPORT_MIME: Record<string, string> = {
+export const GOOGLE_EXPORT_MIME: Record<string, string> = {
   "application/vnd.google-apps.document": "application/pdf",
   "application/vnd.google-apps.presentation": "application/pdf",
   "application/vnd.google-apps.spreadsheet":
