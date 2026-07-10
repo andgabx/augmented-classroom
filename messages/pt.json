@@ -39,7 +39,10 @@
     "yearPlaceholder": "Ano",
     "periodInvalid": "Ano ou semestre inválido.",
     "periodSaved": "Período definido como {period}.",
-    "materialsCount": "Materiais ({count})"
+    "materialsCount": "Materiais ({count})",
+    "tabDocumentos": "Documentos",
+    "tabPrazos": "Tarefas/Prazos",
+    "tabPrazosComingSoon": "Em breve."
   },
   "materials": {
     "categoryTarefa": "Tarefas",

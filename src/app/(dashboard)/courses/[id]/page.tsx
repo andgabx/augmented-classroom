@@ -17,6 +17,8 @@ import { MaterialsView, type MaterialWithStatus } from "@/features/materials/com
 import { listDownloadsForCourse } from "@/features/downloads/server/downloads";
 import { enqueueDownloadsAction } from "@/features/downloads/server/actions";
 import { DownloadAllButton } from "@/features/downloads/components/download-all-button";
+import { CourseTabs } from "@/features/courses/components/course-tabs";
+import { courseTabFromSearchParams } from "@/features/courses/types/course-tab";
 import { Button } from "@/components/ui/button";
 import { getCallbackRedirectUri } from "@/lib/redirect-uri";
 import type { FileTypeGroup, PostCategory } from "@/features/materials/types/post";
@@ -32,6 +34,7 @@ export default async function CourseMaterialsPage({
 }: {
   params: Promise<{ id: string }>;
   searchParams: Promise<{
+    tab?: string;
     category?: string | string[];
     fileType?: string | string[];
     topicId?: string;
@@ -52,7 +55,8 @@ export default async function CourseMaterialsPage({
     await syncCourseMaterials(id, await getCallbackRedirectUri());
   }
 
-  const { category, fileType, topicId, downloadStatus, q, dateFrom, dateTo } = await searchParams;
+  const { tab, category, fileType, topicId, downloadStatus, q, dateFrom, dateTo } = await searchParams;
+  const activeTab = courseTabFromSearchParams(tab);
   const categories = toArray(category) as PostCategory[];
   const fileTypes = toArray(fileType) as FileTypeGroup[];
 
@@ -82,7 +86,6 @@ export default async function CourseMaterialsPage({
     downloadStatus: statusByMaterial.get(material.id),
   }));
 
-
   return (
     <>
       <Link
@@ -111,21 +114,31 @@ export default async function CourseMaterialsPage({
       </div>
 
       <Suspense fallback={null}>
-        <MaterialsFilters topics={topics} />
+        <CourseTabs active={activeTab} />
       </Suspense>
 
-      <DownloadAllButton
-        action={enqueueDownloadsAction.bind(null, downloadableIds)}
-        courseName={course.name}
-        count={downloadableIds.length}
-      />
+      {activeTab === "documentos" ? (
+        <>
+          <Suspense fallback={null}>
+            <MaterialsFilters topics={topics} />
+          </Suspense>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold text-muted-foreground">
-          {t("materialsCount", { count: materials.length })}
-        </h2>
-        <MaterialsView materials={materialsWithStatus} />
-      </section>
+          <DownloadAllButton
+            action={enqueueDownloadsAction.bind(null, downloadableIds)}
+            courseName={course.name}
+            count={downloadableIds.length}
+          />
+
+          <section className="flex flex-col gap-3">
+            <h2 className="text-sm font-semibold text-muted-foreground">
+              {t("materialsCount", { count: materials.length })}
+            </h2>
+            <MaterialsView materials={materialsWithStatus} />
+          </section>
+        </>
+      ) : (
+        <p className="text-sm text-muted-foreground">{t("tabPrazosComingSoon")}</p>
+      )}
     </>
   );
 }

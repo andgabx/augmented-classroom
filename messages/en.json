@@ -39,7 +39,10 @@
     "yearPlaceholder": "Year",
     "periodInvalid": "Invalid year or semester.",
     "periodSaved": "Semester set to {period}.",
-    "materialsCount": "Materials ({count})"
+    "materialsCount": "Materials ({count})",
+    "tabDocumentos": "Documents",
+    "tabPrazos": "Tasks/Deadlines",
+    "tabPrazosComingSoon": "Coming soon."
   },
   "materials": {
     "categoryTarefa": "Assignments",
