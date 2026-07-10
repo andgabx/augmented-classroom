@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { getClassroomClient, getDriveClient } from "@/lib/classroom";
+import { indexCourseMaterialsContent } from "@/features/materials/server/index-content";
 import type { classroom_v1 } from "googleapis";
 import type {
   FileTypeGroup,
@@ -232,6 +233,7 @@ export async function syncCourseMaterials(courseId: string, redirectUri: string)
   await syncCourseWorkMaterials(classroom, courseId);
   await syncAnnouncements(classroom, courseId);
   await resolveMimeTypes(courseId, redirectUri);
+  await indexCourseMaterialsContent(courseId, redirectUri);
 }
 
 const countPosts = db.prepare(`SELECT COUNT(*) as count FROM posts WHERE course_id = ?`);
@@ -318,6 +320,16 @@ function toMaterialListItem(row: MaterialRow): MaterialListItem {
   };
 }
 
+// ponytail: wraps each term in quotes (doubling internal quotes) so user input
+// can never trigger FTS5 MATCH operators like *, -, :.
+function escapeFtsQuery(query: string): string | null {
+  const terms = query
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((term) => `"${term.replace(/"/g, '""')}"`);
+  return terms.length ? terms.join(" ") : null;
+}
+
 export interface ListCourseMaterialsFilter {
   category?: PostCategory[];
   fileType?: FileTypeGroup[];
@@ -343,9 +355,15 @@ export function listCourseMaterials(
     params.push(filter.topicId);
   }
   if (filter.query) {
-    conditions.push("(m.title LIKE ? OR p.title LIKE ? OR p.text LIKE ?)");
+    const ftsQuery = escapeFtsQuery(filter.query);
+    conditions.push(
+      ftsQuery
+        ? "(m.title LIKE ? OR p.title LIKE ? OR p.text LIKE ? OR m.id IN (SELECT material_id FROM material_content_fts WHERE material_content_fts MATCH ?))"
+        : "(m.title LIKE ? OR p.title LIKE ? OR p.text LIKE ?)"
+    );
     const like = `%${filter.query}%`;
     params.push(like, like, like);
+    if (ftsQuery) params.push(ftsQuery);
   }
   if (filter.dateFrom) {
     conditions.push("date(p.creation_time) >= ?");

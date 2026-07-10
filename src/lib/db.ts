@@ -104,6 +104,8 @@ db.exec(`
     session_data TEXT NOT NULL,
     updated_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  CREATE VIRTUAL TABLE IF NOT EXISTS material_content_fts USING fts5(material_id UNINDEXED, content);
 `);
 
 const courseColumns = db.prepare(`PRAGMA table_info(courses)`).all() as { name: string }[];
