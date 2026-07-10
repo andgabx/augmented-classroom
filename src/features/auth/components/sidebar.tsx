@@ -56,6 +56,7 @@ export function Sidebar({ user, lyceumConnected }: { user: SidebarUser; lyceumCo
   const [open, setOpen] = useState(true);
   const [lyceumOpen, setLyceumOpen] = useState(false);
   const pathname = usePathname();
+  const lyceumActive = LYCEUM_SUBITEMS.some(({ href }) => pathname === href || pathname.startsWith(`${href}/`));
   const router = useRouter();
   const initial = (user.name ?? user.email ?? "?").charAt(0).toUpperCase();
   const t = useTranslations("common");
@@ -121,26 +122,34 @@ export function Sidebar({ user, lyceumConnected }: { user: SidebarUser; lyceumCo
 
       {lyceumConnected && (
         <div className="space-y-1">
-          <button
-            type="button"
-            onClick={() => setLyceumOpen((value) => !value)}
-            className="flex h-10 w-full items-center overflow-hidden rounded-md text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent/60"
+          <div
+            className={`flex h-10 w-full items-center overflow-hidden rounded-md transition-colors ${
+              lyceumActive
+                ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60"
+            }`}
           >
-            <div className="grid size-10 shrink-0 place-content-center">
+            <Link href={LYCEUM_SUBITEMS[0].href} className="grid size-10 shrink-0 place-content-center">
               <GraduationCap className="size-5" />
-            </div>
+            </Link>
             <AnimatePresence>
               {open && (
-                <motion.span
-                  {...LABEL_MOTION}
-                  className="flex flex-1 items-center justify-between whitespace-nowrap pr-3 text-sm font-medium"
-                >
-                  Lyceum
-                  <ChevronDown className={`size-4 transition-transform ${lyceumOpen ? "rotate-180" : ""}`} />
+                <motion.span {...LABEL_MOTION} className="flex flex-1 items-center pr-1">
+                  <Link href={LYCEUM_SUBITEMS[0].href} className="flex-1 whitespace-nowrap text-sm font-medium">
+                    Lyceum
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setLyceumOpen((value) => !value)}
+                    aria-label={tSidebar("collapse")}
+                    className="grid size-8 shrink-0 place-content-center rounded-md hover:bg-sidebar-accent"
+                  >
+                    <ChevronDown className={`size-4 transition-transform ${lyceumOpen ? "rotate-180" : ""}`} />
+                  </button>
                 </motion.span>
               )}
             </AnimatePresence>
-          </button>
+          </div>
 
           {open && lyceumOpen && (
             <div className="flex flex-col gap-1 pl-10">

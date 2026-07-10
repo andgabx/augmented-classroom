@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { GraduationCap } from "lucide-react";
 import { connectLyceumAction, disconnectLyceumAction } from "@/features/lyceum/server/actions";
 import { loadLyceumCredentials } from "@/features/lyceum/server/credentials";
 import { getLyceumClient } from "@/features/lyceum/server/get-lyceum-client";
@@ -33,9 +34,12 @@ export default async function SettingsPage({
       <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("title")}</h1>
 
       <section className="flex max-w-xl flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
-        <div className="flex flex-col gap-1">
-          <h2 className="text-sm font-semibold text-foreground">{t("lyceumTitle")}</h2>
-          <p className="text-sm text-muted-foreground">{t("lyceumIntro")}</p>
+        <div className="flex items-center gap-3">
+          <GraduationCap className="size-8 text-foreground" />
+          <div className="flex flex-col gap-1">
+            <h2 className="text-sm font-semibold text-foreground">{t("lyceumTitle")}</h2>
+            <p className="text-sm text-muted-foreground">{t("lyceumIntro")}</p>
+          </div>
         </div>
 
         {error && (
