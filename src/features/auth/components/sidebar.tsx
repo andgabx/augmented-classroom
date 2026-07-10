@@ -18,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ThemeToggle } from "@/features/auth/components/theme-toggle";
 import { clearCredentialsAction, logoutAction } from "@/features/auth/server/actions";
 import { setUserLocale, type Locale } from "@/i18n/locale";
 import { shortName } from "@/lib/utils";
@@ -203,6 +204,8 @@ export function Sidebar({ user, lyceumConnected }: { user: SidebarUser; lyceumCo
             )}
           </AnimatePresence>
         </button>
+
+        <ThemeToggle open={open} />
 
         <form action={logoutAction}>
           <button
