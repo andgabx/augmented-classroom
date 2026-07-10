@@ -58,6 +58,11 @@
     "noResults": "No materials found."
   },
   "downloads": {
+    "title": "Downloads",
+    "empty": "No downloads in progress.",
+    "attempt": "(attempt {attempts})",
+    "downloadCount": "Download {count} file(s)",
+    "downloadingToast": "Downloading {count} file(s) to Materiais/{courseName}/",
     "status": {
       "queued": "Queued",
       "downloading": "Downloading...",

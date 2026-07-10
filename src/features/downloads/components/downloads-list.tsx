@@ -8,6 +8,7 @@ import type { DownloadListItem } from "@/features/downloads/types/download";
 const POLL_INTERVAL_MS = 2000;
 
 export function DownloadsList({ initialDownloads }: { initialDownloads: DownloadListItem[] }) {
+  const t = useTranslations("downloads");
   const tStatus = useTranslations("downloads.status");
   const [downloads, setDownloads] = useState(initialDownloads);
 
@@ -22,7 +23,7 @@ export function DownloadsList({ initialDownloads }: { initialDownloads: Download
   }, []);
 
   if (downloads.length === 0) {
-    return <p className="text-sm text-muted-foreground">Nenhum download em andamento.</p>;
+    return <p className="text-sm text-muted-foreground">{t("empty")}</p>;
   }
 
   const byCourse = new Map<string, { courseName: string; items: DownloadListItem[] }>();
@@ -46,7 +47,7 @@ export function DownloadsList({ initialDownloads }: { initialDownloads: Download
                 <span className="font-medium text-foreground">{item.materialLabel}</span>
                 <span className="text-sm text-muted-foreground">
                   {tStatus(DOWNLOAD_STATUS_KEY[item.status])}
-                  {item.status === "DOWNLOADING" && item.attempts > 1 && ` (tentativa ${item.attempts})`}
+                  {item.status === "DOWNLOADING" && item.attempts > 1 && ` ${t("attempt", { attempts: item.attempts })}`}
                   {item.status === "ERROR" && item.errorMessage && ` — ${item.errorMessage}`}
                 </span>
               </div>

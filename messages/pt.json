@@ -58,6 +58,11 @@
     "noResults": "Nenhum material encontrado."
   },
   "downloads": {
+    "title": "Downloads",
+    "empty": "Nenhum download em andamento.",
+    "attempt": "(tentativa {attempts})",
+    "downloadCount": "Baixar {count} arquivo(s)",
+    "downloadingToast": "Baixando {count} arquivo(s) para Materiais/{courseName}/",
     "status": {
       "queued": "Na fila",
       "downloading": "Baixando...",

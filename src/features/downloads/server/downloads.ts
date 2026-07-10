@@ -81,7 +81,7 @@ interface DownloadListRow extends DownloadRow {
   post_text: string | null;
 }
 
-export function listAllDownloads(): DownloadListItem[] {
+export function listAllDownloads(untitledLabel: string): DownloadListItem[] {
   const rows = db
     .prepare(
       `SELECT d.*, c.id as course_id, c.name as course_name,
@@ -98,7 +98,7 @@ export function listAllDownloads(): DownloadListItem[] {
     ...toDownload(row),
     courseId: row.course_id,
     courseName: row.course_name,
-    materialLabel: row.material_title ?? row.post_title ?? row.post_text ?? "Sem título",
+    materialLabel: row.material_title ?? row.post_title ?? row.post_text ?? untitledLabel,
   }));
 }
 
