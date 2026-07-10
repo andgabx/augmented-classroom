@@ -29,8 +29,12 @@
     "noActiveClasses": "Nenhuma turma ativa.",
     "owner": "(titular)",
     "backToClasses": "Voltar para turmas",
-    "periodPlaceholder": "Período (ex: 2024.1)",
     "savePeriod": "Salvar período",
+    "termFirstSemester": "Primeiro semestre",
+    "termSecondSemester": "Segundo semestre",
+    "yearPlaceholder": "Ano",
+    "periodInvalid": "Ano ou semestre inválido.",
+    "periodSaved": "Período definido como {period}.",
     "materialsCount": "Materiais ({count})"
   },
   "materials": {
@@ -54,6 +58,8 @@
     "topic": "Tópico",
     "allTopics": "Todos",
     "downloadStatus": "Status de download",
+    "postedFrom": "Publicado de",
+    "postedTo": "até",
     "untitled": "Sem título",
     "noResults": "Nenhum material encontrado."
   },

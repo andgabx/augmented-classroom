@@ -29,8 +29,12 @@
     "noActiveClasses": "No active classes.",
     "owner": "(primary)",
     "backToClasses": "Back to classes",
-    "periodPlaceholder": "Semester (e.g. 2024.1)",
     "savePeriod": "Save semester",
+    "termFirstSemester": "First semester",
+    "termSecondSemester": "Second semester",
+    "yearPlaceholder": "Year",
+    "periodInvalid": "Invalid year or semester.",
+    "periodSaved": "Semester set to {period}.",
     "materialsCount": "Materials ({count})"
   },
   "materials": {
@@ -54,6 +58,8 @@
     "topic": "Topic",
     "allTopics": "All",
     "downloadStatus": "Download status",
+    "postedFrom": "Posted from",
+    "postedTo": "to",
     "untitled": "Untitled",
     "noResults": "No materials found."
   },

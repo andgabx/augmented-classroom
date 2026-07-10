@@ -87,6 +87,8 @@ export function MaterialsFilters({ topics }: { topics: Topic[] }) {
   const fileTypes = searchParams.getAll("fileType");
   const topicId = searchParams.get("topicId") ?? "";
   const downloadStatus = searchParams.get("downloadStatus") ?? "";
+  const dateFrom = searchParams.get("dateFrom") ?? "";
+  const dateTo = searchParams.get("dateTo") ?? "";
 
   return (
     <div className="flex flex-col gap-4">
@@ -97,6 +99,27 @@ export function MaterialsFilters({ topics }: { topics: Topic[] }) {
         placeholder={t("searchPlaceholder")}
         className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
       />
+
+      <div className="flex flex-wrap items-end gap-3">
+        <label className="flex flex-col gap-1.5 text-sm text-muted-foreground">
+          {t("postedFrom")}
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setSingleValue("dateFrom", e.target.value)}
+            className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
+          />
+        </label>
+        <label className="flex flex-col gap-1.5 text-sm text-muted-foreground">
+          {t("postedTo")}
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setSingleValue("dateTo", e.target.value)}
+            className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
+          />
+        </label>
+      </div>
 
       <fieldset className="flex flex-col gap-1.5">
         <legend className="text-sm font-semibold text-muted-foreground">{t("category")}</legend>

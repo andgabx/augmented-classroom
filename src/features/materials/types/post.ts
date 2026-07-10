@@ -52,5 +52,6 @@ export interface MaterialListItem extends Material {
   postCategory: PostCategory;
   postTitle: string | null;
   postText: string | null;
+  postCreationTime: string | null;
   fileType: FileTypeGroup;
 }

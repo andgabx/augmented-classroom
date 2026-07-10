@@ -3,8 +3,8 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { ArrowLeft } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { getCourse, listPeriods } from "@/features/courses/server/courses";
-import { setCoursePeriodAction } from "@/features/courses/server/actions";
+import { getCourse } from "@/features/courses/server/courses";
+import { PeriodForm } from "@/features/courses/components/period-form";
 import {
   hasSyncedMaterials,
   listCourseMaterials,
@@ -37,6 +37,8 @@ export default async function CourseMaterialsPage({
     topicId?: string;
     downloadStatus?: string;
     q?: string;
+    dateFrom?: string;
+    dateTo?: string;
   }>;
 }) {
   const { id } = await params;
@@ -50,7 +52,7 @@ export default async function CourseMaterialsPage({
     await syncCourseMaterials(id, await getCallbackRedirectUri());
   }
 
-  const { category, fileType, topicId, downloadStatus, q } = await searchParams;
+  const { category, fileType, topicId, downloadStatus, q, dateFrom, dateTo } = await searchParams;
   const categories = toArray(category) as PostCategory[];
   const fileTypes = toArray(fileType) as FileTypeGroup[];
 
@@ -64,6 +66,8 @@ export default async function CourseMaterialsPage({
     fileType: fileTypes.length ? fileTypes : undefined,
     topicId: topicId || undefined,
     query: q || undefined,
+    dateFrom: dateFrom || undefined,
+    dateTo: dateTo || undefined,
   });
 
   if (downloadStatus === "NOVO") {
@@ -97,23 +101,7 @@ export default async function CourseMaterialsPage({
           {course.section && (
             <span className="text-sm text-muted-foreground">{course.section}</span>
           )}
-          <form action={setCoursePeriodAction.bind(null, id)} className="flex items-center gap-2 pt-1">
-            <input
-              list="periods-list"
-              name="periodName"
-              defaultValue={course.periodId ?? ""}
-              placeholder={t("periodPlaceholder")}
-              className="rounded-lg border border-input bg-background px-3 py-1.5 text-xs text-foreground outline-none focus:border-ring"
-            />
-            <datalist id="periods-list">
-              {listPeriods().map((period) => (
-                <option key={period.id} value={period.name} />
-              ))}
-            </datalist>
-            <Button type="submit" variant="outline" size="sm">
-              {t("savePeriod")}
-            </Button>
-          </form>
+          <PeriodForm courseId={id} periodId={course.periodId} />
         </div>
         <form action={syncCourseMaterialsAction.bind(null, id)}>
           <Button type="submit" variant="outline" size="sm">
