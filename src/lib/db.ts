@@ -3,7 +3,13 @@ import path from "node:path";
 
 const dbPath = path.join(process.cwd(), "augmented-classroom.db");
 
-export const db = new DatabaseSync(dbPath);
+// Next.js's build step imports this module from multiple parallel workers
+// while collecting page data; the timeout option applies a busy_timeout
+// from connection open, so a worker waits instead of failing immediately
+// with "database is locked" while another worker holds the write lock.
+export const db = new DatabaseSync(dbPath, { timeout: 5000 });
+
+db.exec(`PRAGMA journal_mode = WAL;`);
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS auth_tokens (
@@ -108,13 +114,19 @@ db.exec(`
   CREATE VIRTUAL TABLE IF NOT EXISTS material_content_fts USING fts5(material_id UNINDEXED, content);
 `);
 
-const courseColumns = db.prepare(`PRAGMA table_info(courses)`).all() as { name: string }[];
-if (!courseColumns.some((column) => column.name === "period_id")) {
-  db.exec(`ALTER TABLE courses ADD COLUMN period_id TEXT REFERENCES periods(id)`);
+// Next.js's build step imports this module from multiple parallel workers,
+// so two workers can both see a column missing and both try to add it;
+// the loser hits "duplicate column name", which is fine to ignore here.
+function addColumnIfMissing(table: string, column: string, definition: string) {
+  const columns = db.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[];
+  if (columns.some((c) => c.name === column)) return;
+  try {
+    db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+  } catch (error) {
+    if (!(error instanceof Error) || !error.message.includes("duplicate column name")) throw error;
+  }
 }
-if (!courseColumns.some((column) => column.name === "period_manual")) {
-  db.exec(`ALTER TABLE courses ADD COLUMN period_manual INTEGER NOT NULL DEFAULT 0`);
-}
-if (!courseColumns.some((column) => column.name === "owner_id")) {
-  db.exec(`ALTER TABLE courses ADD COLUMN owner_id TEXT`);
-}
+
+addColumnIfMissing("courses", "period_id", "TEXT REFERENCES periods(id)");
+addColumnIfMissing("courses", "period_manual", "INTEGER NOT NULL DEFAULT 0");
+addColumnIfMissing("courses", "owner_id", "TEXT");
