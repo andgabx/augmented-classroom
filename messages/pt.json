@@ -121,6 +121,8 @@
     "connectButton": "Conectar com Lyceum",
     "connectedAs": "Conectado como RA {ra}",
     "disconnectButton": "Desconectar",
+    "sessionExpiredMessage": "Sua sessão do Lyceum expirou. Reconecte para continuar acessando boletim e histórico.",
+    "reconnectButton": "Reconectar com Lyceum",
     "errorMissingTenant": "Informe a instituição para continuar.",
     "errorLoginFailed": "Não foi possível concluir o login no Lyceum. Tente novamente."
   },

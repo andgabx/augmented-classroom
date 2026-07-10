@@ -121,6 +121,8 @@
     "connectButton": "Connect with Lyceum",
     "connectedAs": "Connected as RA {ra}",
     "disconnectButton": "Disconnect",
+    "sessionExpiredMessage": "Your Lyceum session has expired. Reconnect to keep accessing grades and academic history.",
+    "reconnectButton": "Reconnect with Lyceum",
     "errorMissingTenant": "Enter the institution to continue.",
     "errorLoginFailed": "Couldn't complete the Lyceum login. Try again."
   },

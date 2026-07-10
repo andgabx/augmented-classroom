@@ -1,7 +1,21 @@
 import { getTranslations } from "next-intl/server";
 import { connectLyceumAction, disconnectLyceumAction } from "@/features/lyceum/server/actions";
 import { loadLyceumCredentials } from "@/features/lyceum/server/credentials";
+import { getLyceumClient } from "@/features/lyceum/server/get-lyceum-client";
+import { LyceumSessionExpiredError } from "@/features/lyceum/server/lyceum-client";
 import { Button } from "@/components/ui/button";
+
+async function isLyceumSessionAlive(): Promise<boolean> {
+  const client = await getLyceumClient();
+  if (!client) return false;
+  try {
+    await client.getDadosAluno();
+    return true;
+  } catch (error) {
+    if (error instanceof LyceumSessionExpiredError) return false;
+    throw error;
+  }
+}
 
 export default async function SettingsPage({
   searchParams,
@@ -11,6 +25,7 @@ export default async function SettingsPage({
   const { error } = await searchParams;
   const t = await getTranslations("settings");
   const connection = loadLyceumCredentials();
+  const sessionAlive = connection ? await isLyceumSessionAlive() : false;
 
   return (
     <>
@@ -28,7 +43,7 @@ export default async function SettingsPage({
           </p>
         )}
 
-        {connection ? (
+        {connection && sessionAlive ? (
           <div className="flex items-center justify-between gap-4">
             <p className="text-sm text-foreground">{t("connectedAs", { ra: connection.ra })}</p>
             <form action={disconnectLyceumAction}>
@@ -38,26 +53,37 @@ export default async function SettingsPage({
             </form>
           </div>
         ) : (
-          <form action={connectLyceumAction} className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="tenant" className="text-sm font-medium text-foreground">
-                {t("tenantLabel")}
-              </label>
-              <input
-                id="tenant"
-                name="tenant"
-                type="text"
-                required
-                placeholder={t("tenantPlaceholder")}
-                className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
-              />
-              <p className="text-xs text-muted-foreground">{t("tenantHint")}</p>
-            </div>
+          <div className="flex flex-col gap-4">
+            {connection && <p className="text-sm text-destructive">{t("sessionExpiredMessage")}</p>}
+            <form action={connectLyceumAction} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="tenant" className="text-sm font-medium text-foreground">
+                  {t("tenantLabel")}
+                </label>
+                <input
+                  id="tenant"
+                  name="tenant"
+                  type="text"
+                  required
+                  defaultValue={connection?.tenant}
+                  placeholder={t("tenantPlaceholder")}
+                  className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
+                />
+                <p className="text-xs text-muted-foreground">{t("tenantHint")}</p>
+              </div>
 
-            <Button type="submit" className="self-start">
-              {t("connectButton")}
-            </Button>
-          </form>
+              <Button type="submit" className="self-start">
+                {connection ? t("reconnectButton") : t("connectButton")}
+              </Button>
+            </form>
+            {connection && (
+              <form action={disconnectLyceumAction}>
+                <Button type="submit" variant="outline" size="sm">
+                  {t("disconnectButton")}
+                </Button>
+              </form>
+            )}
+          </div>
         )}
       </section>
     </>
