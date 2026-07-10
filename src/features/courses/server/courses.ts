@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { getClassroomClient } from "@/lib/classroom";
 import type { classroom_v1 } from "googleapis";
-import type { Course, CourseState, CourseTeacher } from "@/features/courses/types/course";
+import type { Course, CourseState, CourseTeacher, Period, TeacherOption } from "@/features/courses/types/course";
 
 interface CourseRow {
   id: string;
@@ -12,18 +12,27 @@ interface CourseRow {
   alternate_link: string;
   creation_time: string | null;
   update_time: string | null;
+  period_id: string | null;
+  owner_id: string | null;
 }
 
-const selectTeachersByCourse = db.prepare(
-  `SELECT name, photo_url FROM course_teachers WHERE course_id = ? ORDER BY name`
-);
+const selectTeachersByCourse = db.prepare(`
+  SELECT teacher_id, name, photo_url FROM course_teachers
+  WHERE course_id = ?
+  ORDER BY (teacher_id = ?) DESC, name
+`);
 
-function getCourseTeachers(courseId: string): CourseTeacher[] {
-  const rows = selectTeachersByCourse.all(courseId) as unknown as {
+function getCourseTeachers(courseId: string, ownerId: string | null): CourseTeacher[] {
+  const rows = selectTeachersByCourse.all(courseId, ownerId ?? "") as unknown as {
+    teacher_id: string;
     name: string;
     photo_url: string | null;
   }[];
-  return rows.map((row) => ({ name: row.name, photoUrl: row.photo_url }));
+  return rows.map((row) => ({
+    name: row.name,
+    photoUrl: row.photo_url,
+    isOwner: row.teacher_id === ownerId,
+  }));
 }
 
 function toCourse(row: CourseRow): Course {
@@ -36,13 +45,43 @@ function toCourse(row: CourseRow): Course {
     alternateLink: row.alternate_link,
     creationTime: row.creation_time,
     updateTime: row.update_time,
-    teachers: getCourseTeachers(row.id),
+    teachers: getCourseTeachers(row.id, row.owner_id),
+    periodId: row.period_id,
+    ownerId: row.owner_id,
   };
 }
 
+const upsertPeriod = db.prepare(`
+  INSERT INTO periods (id, name) VALUES (?, ?)
+  ON CONFLICT(id) DO NOTHING
+`);
+
+// ponytail: regex covers the patterns from the spec (YYYY.N, YYYY/N, YYYY-N, "Semestre YYYY-N",
+// "Nº período"); anything else falls back to creation-date-based inference.
+function inferPeriod(courseName: string, creationTime: string | null): Period {
+  const yearTerm = courseName.match(/(20\d{2})[./-](\d)\b/);
+  if (yearTerm) {
+    const label = `${yearTerm[1]}.${yearTerm[2]}`;
+    return { id: label, name: label };
+  }
+
+  const date = creationTime ? new Date(creationTime) : new Date();
+  const year = date.getFullYear();
+
+  const termOnly = courseName.match(/(\d)\s*[ºo]\s*per[ií]odo/i);
+  if (termOnly) {
+    const label = `${year}.${termOnly[1]}`;
+    return { id: label, name: label };
+  }
+
+  const term = date.getMonth() >= 6 ? 2 : 1;
+  const label = `${year}.${term}`;
+  return { id: label, name: label };
+}
+
 const upsertCourse = db.prepare(`
-  INSERT INTO courses (id, name, section, room, course_state, alternate_link, creation_time, update_time)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  INSERT INTO courses (id, name, section, room, course_state, alternate_link, creation_time, update_time, period_id, owner_id, period_manual)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
   ON CONFLICT(id) DO UPDATE SET
     name = excluded.name,
     section = excluded.section,
@@ -50,7 +89,9 @@ const upsertCourse = db.prepare(`
     course_state = excluded.course_state,
     alternate_link = excluded.alternate_link,
     creation_time = excluded.creation_time,
-    update_time = excluded.update_time
+    update_time = excluded.update_time,
+    owner_id = excluded.owner_id,
+    period_id = CASE WHEN courses.period_manual = 1 THEN courses.period_id ELSE excluded.period_id END
 `);
 
 const deleteCourseTeachers = db.prepare(`DELETE FROM course_teachers WHERE course_id = ?`);
@@ -94,6 +135,9 @@ export async function syncCourses(redirectUri: string): Promise<void> {
         continue;
       }
 
+      const period = inferPeriod(course.name, course.creationTime ?? null);
+      upsertPeriod.run(period.id, period.name);
+
       upsertCourse.run(
         course.id,
         course.name,
@@ -102,7 +146,9 @@ export async function syncCourses(redirectUri: string): Promise<void> {
         course.courseState,
         course.alternateLink,
         course.creationTime ?? null,
-        course.updateTime ?? null
+        course.updateTime ?? null,
+        period.id,
+        course.ownerId ?? null
       );
 
       await syncCourseTeachers(classroom, course.id);
@@ -122,6 +168,8 @@ export function getCourse(id: string): Course | null {
 export interface ListCoursesFilter {
   state?: CourseState;
   query?: string;
+  teacherId?: string;
+  periodId?: string;
 }
 
 export function listCourses(filter: ListCoursesFilter = {}): Course[] {
@@ -136,6 +184,14 @@ export function listCourses(filter: ListCoursesFilter = {}): Course[] {
     conditions.push("name LIKE ?");
     params.push(`%${filter.query}%`);
   }
+  if (filter.teacherId) {
+    conditions.push("id IN (SELECT course_id FROM course_teachers WHERE teacher_id = ?)");
+    params.push(filter.teacherId);
+  }
+  if (filter.periodId) {
+    conditions.push("period_id = ?");
+    params.push(filter.periodId);
+  }
 
   const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
   const rows = db
@@ -143,4 +199,29 @@ export function listCourses(filter: ListCoursesFilter = {}): Course[] {
     .all(...params) as unknown as CourseRow[];
 
   return rows.map(toCourse);
+}
+
+const selectDistinctTeachers = db.prepare(
+  `SELECT teacher_id as id, name FROM course_teachers GROUP BY teacher_id, name ORDER BY name`
+);
+
+export function listTeachers(): TeacherOption[] {
+  const rows = selectDistinctTeachers.all() as unknown as TeacherOption[];
+  return rows.map((row) => ({ id: row.id, name: row.name }));
+}
+
+const selectPeriods = db.prepare(`SELECT id, name FROM periods ORDER BY id DESC`);
+
+export function listPeriods(): Period[] {
+  const rows = selectPeriods.all() as unknown as Period[];
+  return rows.map((row) => ({ id: row.id, name: row.name }));
+}
+
+const setCoursePeriodStmt = db.prepare(`UPDATE courses SET period_id = ?, period_manual = 1 WHERE id = ?`);
+
+export function setCoursePeriod(courseId: string, periodName: string): void {
+  const id = periodName.trim();
+  if (!id) return;
+  upsertPeriod.run(id, id);
+  setCoursePeriodStmt.run(id, courseId);
 }

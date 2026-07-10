@@ -35,6 +35,11 @@ db.exec(`
     update_time TEXT
   );
 
+  CREATE TABLE IF NOT EXISTS periods (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL
+  );
+
   CREATE TABLE IF NOT EXISTS course_teachers (
     course_id TEXT NOT NULL,
     teacher_id TEXT NOT NULL,
@@ -86,3 +91,14 @@ db.exec(`
     updated_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 `);
+
+const courseColumns = db.prepare(`PRAGMA table_info(courses)`).all() as { name: string }[];
+if (!courseColumns.some((column) => column.name === "period_id")) {
+  db.exec(`ALTER TABLE courses ADD COLUMN period_id TEXT REFERENCES periods(id)`);
+}
+if (!courseColumns.some((column) => column.name === "period_manual")) {
+  db.exec(`ALTER TABLE courses ADD COLUMN period_manual INTEGER NOT NULL DEFAULT 0`);
+}
+if (!courseColumns.some((column) => column.name === "owner_id")) {
+  db.exec(`ALTER TABLE courses ADD COLUMN owner_id TEXT`);
+}
