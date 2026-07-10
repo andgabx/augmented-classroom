@@ -45,7 +45,7 @@ next-env.d.ts
 *.db-journal
 
 # downloaded course materials
-/Materiais/
+/Materials/
 
 # brainstorm companion sessions
 .superpowers/

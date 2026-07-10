@@ -83,10 +83,10 @@
     "empty": "Nenhum download em andamento.",
     "attempt": "(tentativa {attempts})",
     "downloadCount": "Baixar {count} arquivo(s)",
-    "downloadingToast": "Baixando {count} arquivo(s) para Materiais/{courseName}/",
+    "downloadingToast": "Baixando {count} arquivo(s) para Materials/{courseName}/",
     "clear": "Limpar lista",
     "clearTitle": "Limpar histórico de downloads?",
-    "clearDescription": "Remove todos os itens da lista. Os arquivos já baixados continuam em Materiais/ — isso só limpa o histórico, não apaga nada do disco.",
+    "clearDescription": "Remove todos os itens da lista. Os arquivos já baixados continuam em Materials/ — isso só limpa o histórico, não apaga nada do disco.",
     "clearCancel": "Cancelar",
     "clearConfirm": "Limpar",
     "status": {

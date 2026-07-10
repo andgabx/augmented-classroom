@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { getDriveClient } from "@/lib/classroom";
 import type { Download, DownloadListItem, DownloadStatus } from "@/features/downloads/types/download";
 
-const MATERIALS_ROOT = path.join(process.cwd(), "Materiais");
+const MATERIALS_ROOT = path.join(process.cwd(), "Materials");
 
 function sanitize(name: string): string {
   return name.replace(/[<>:"/\\|?*\x00-\x1f]/g, "_").replace(/[. ]+$/, "").slice(0, 150) || "sem-nome";
