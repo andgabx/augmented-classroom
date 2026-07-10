@@ -5,7 +5,7 @@ import { LyceumSessionExpiredError } from "@/features/lyceum/server/lyceum-clien
 import { LyceumSessionExpiredNotice } from "@/features/lyceum/components/academic-data";
 import { FilterablePeriodTable } from "@/features/lyceum/components/period-filter-table";
 
-const FALTAS_EXCLUDED_FIELDS = ["id", "aluno", "codDisciplina", "nivelTurma", "links", "codigoTurma"];
+const FALTAS_EXCLUDED_FIELDS = ["id", "aluno", "codDisciplina", "nivelTurma", "links", "codigoTurma", "obrigatoria"];
 
 export default async function LyceumFaltasPage() {
   const t = await getTranslations("lyceumAcademico");

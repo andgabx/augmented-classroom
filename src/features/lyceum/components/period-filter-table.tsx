@@ -39,6 +39,15 @@ export function FilterablePeriodTable({
 
   const filtered = periods.length > 0 && period !== "all" ? rows.filter((row) => periodOf(row) === period) : rows;
 
+  // ponytail: quando ano/semestre vêm em colunas separadas, mostra "AAAA.S" concatenado
+  // na tabela em vez das duas colunas cruas — mesma junção já usada para o filtro.
+  const displayRows = periodColumns
+    ? filtered.map((row) => {
+        const { [periodColumns.yearKey]: year, [periodColumns.semesterKey]: semester, ...rest } = row;
+        return { periodo: year != null && semester != null ? `${year}.${semester}` : null, ...rest };
+      })
+    : filtered;
+
   return (
     <div className="flex flex-col gap-2">
       {periods.length > 0 && (
@@ -55,7 +64,7 @@ export function FilterablePeriodTable({
           ))}
         </select>
       )}
-      <DynamicTable data={filtered} emptyLabel={emptyLabel} excludeKeys={excludeKeys} />
+      <DynamicTable data={displayRows} emptyLabel={emptyLabel} excludeKeys={excludeKeys} />
     </div>
   );
 }
