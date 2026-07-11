@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { detectPeriodColumn, DynamicTable, toRows } from "@/features/lyceum/components/academic-data";
+import { detectPeriodColumn, toRows } from "@/features/lyceum/components/academic-data";
+import { DynamicTable } from "@/features/lyceum/components/dynamic-table";
+import { StaggeredSelect, StaggeredSelectItem } from "@/components/ui/staggered-select";
 
 // ponytail: Lyceum não expõe endpoint de períodos — o filtro é derivado localmente.
 // Por padrão acha uma coluna cujos valores batem "AAAA.S" (ex.: 2024.1); quando os
@@ -51,18 +53,14 @@ export function FilterablePeriodTable({
   return (
     <div className="flex flex-col gap-2">
       {periods.length > 0 && (
-        <select
-          value={period}
-          onChange={(event) => setPeriod(event.target.value)}
-          className="w-fit rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground"
-        >
-          <option value="all">{allPeriodsLabel}</option>
+        <StaggeredSelect value={period} onValueChange={setPeriod}>
+          <StaggeredSelectItem value="all">{allPeriodsLabel}</StaggeredSelectItem>
           {periods.map((p) => (
-            <option key={p} value={p}>
+            <StaggeredSelectItem key={p} value={p}>
               {p}
-            </option>
+            </StaggeredSelectItem>
           ))}
-        </select>
+        </StaggeredSelect>
       )}
       <DynamicTable data={displayRows} emptyLabel={emptyLabel} excludeKeys={excludeKeys} />
     </div>

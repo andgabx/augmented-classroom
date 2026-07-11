@@ -46,6 +46,11 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --shadow-xs: var(--shadow-elevation-xs);
+  --shadow-sm: var(--shadow-elevation-sm);
+  --shadow-md: var(--shadow-elevation-md);
+  --shadow-lg: var(--shadow-elevation-lg);
+  --shadow-xl: var(--shadow-elevation-xl);
 }
 
 :root {
@@ -81,6 +86,11 @@
   --sidebar-accent-foreground: #8a3a19;
   --sidebar-border: #e7e5e2;
   --sidebar-ring: #a8481f;
+  --shadow-elevation-xs: 0 1px 2px 0 rgba(28, 25, 23, 0.04);
+  --shadow-elevation-sm: 0 1px 3px 0 rgba(28, 25, 23, 0.06), 0 4px 8px -2px rgba(28, 25, 23, 0.05);
+  --shadow-elevation-md: 0 4px 12px -2px rgba(28, 25, 23, 0.08), 0 12px 24px -8px rgba(28, 25, 23, 0.08);
+  --shadow-elevation-lg: 0 8px 24px -4px rgba(28, 25, 23, 0.1), 0 24px 48px -16px rgba(28, 25, 23, 0.12);
+  --shadow-elevation-xl: 0 16px 40px -8px rgba(28, 25, 23, 0.14), 0 32px 64px -24px rgba(28, 25, 23, 0.16);
 }
 
 .dark {
@@ -115,6 +125,11 @@
   --sidebar-accent-foreground: #e8a97c;
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: #d97a4d;
+  --shadow-elevation-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-elevation-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.35), 0 4px 8px -2px rgba(0, 0, 0, 0.3);
+  --shadow-elevation-md: 0 4px 12px -2px rgba(0, 0, 0, 0.4), 0 12px 24px -8px rgba(0, 0, 0, 0.4);
+  --shadow-elevation-lg: 0 8px 24px -4px rgba(0, 0, 0, 0.45), 0 24px 48px -16px rgba(0, 0, 0, 0.5);
+  --shadow-elevation-xl: 0 16px 40px -8px rgba(0, 0, 0, 0.5), 0 32px 64px -24px rgba(0, 0, 0, 0.55);
 }
 
 @layer base {

@@ -97,7 +97,7 @@ export function MaterialsFilters({ topics }: { topics: Topic[] }) {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={t("searchPlaceholder")}
-        className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
+        className="rounded-lg bg-card px-3 py-2 text-sm text-foreground shadow-sm outline-none transition-shadow focus:shadow-md"
       />
 
       <div className="flex flex-wrap items-end gap-3">
@@ -107,7 +107,7 @@ export function MaterialsFilters({ topics }: { topics: Topic[] }) {
             type="date"
             value={dateFrom}
             onChange={(e) => setSingleValue("dateFrom", e.target.value)}
-            className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
+            className="rounded-lg bg-card px-3 py-2 text-sm text-foreground shadow-sm outline-none transition-shadow focus:shadow-md"
           />
         </label>
         <label className="flex flex-col gap-1.5 text-sm text-muted-foreground">
@@ -116,7 +116,7 @@ export function MaterialsFilters({ topics }: { topics: Topic[] }) {
             type="date"
             value={dateTo}
             onChange={(e) => setSingleValue("dateTo", e.target.value)}
-            className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
+            className="rounded-lg bg-card px-3 py-2 text-sm text-foreground shadow-sm outline-none transition-shadow focus:shadow-md"
           />
         </label>
       </div>
@@ -159,7 +159,7 @@ export function MaterialsFilters({ topics }: { topics: Topic[] }) {
           <select
             value={topicId}
             onChange={(e) => setSingleValue("topicId", e.target.value)}
-            className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
+            className="rounded-lg bg-card px-3 py-2 text-sm text-foreground shadow-sm outline-none transition-shadow focus:shadow-md"
           >
             <option value="">{t("allTopics")}</option>
             {topics.map((topic) => (

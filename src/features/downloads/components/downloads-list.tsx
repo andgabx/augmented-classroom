@@ -42,7 +42,7 @@ export function DownloadsList({ initialDownloads }: { initialDownloads: Download
             {group.items.map((item) => (
               <div
                 key={item.materialId}
-                className="flex items-center justify-between gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm"
+                className="flex items-center justify-between gap-4 rounded-2xl bg-card p-4 shadow-sm"
               >
                 <span className="font-medium text-foreground">{item.materialLabel}</span>
                 <span className="text-sm text-muted-foreground">

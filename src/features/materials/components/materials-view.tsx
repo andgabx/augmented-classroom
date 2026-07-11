@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import {
+  ArrowRight,
   File as FileIcon,
   FileText,
   Image as ImageIcon,
@@ -86,7 +87,7 @@ function MaterialRow({ material }: { material: MaterialWithStatus }) {
       href={material.alternateLink ?? undefined}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm transition-colors hover:bg-muted"
+      className="flex items-center gap-3 rounded-2xl bg-card p-4 shadow-sm transition-shadow duration-200 hover:shadow-lg"
     >
       <Icon className="size-5 shrink-0 text-muted-foreground" />
       <div className="flex flex-col gap-1">
@@ -110,7 +111,7 @@ function MaterialCard({ material }: { material: MaterialWithStatus }) {
       href={material.alternateLink ?? undefined}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-3 shadow-sm transition-colors hover:bg-muted"
+      className="group flex flex-col gap-2 rounded-2xl bg-card p-3 shadow-sm transition-shadow duration-200 hover:shadow-lg"
     >
       <div className="flex aspect-video items-center justify-center overflow-hidden rounded-lg bg-muted">
         {showThumbnail ? (
@@ -128,9 +129,12 @@ function MaterialCard({ material }: { material: MaterialWithStatus }) {
         )}
       </div>
       <div className="flex flex-col gap-1">
-        <span className="line-clamp-2 text-sm font-medium text-foreground">
-          {materialLabel(material, t("untitled"))}
-        </span>
+        <div className="flex items-start gap-1">
+          <span className="line-clamp-2 flex-1 text-sm font-medium text-foreground">
+            {materialLabel(material, t("untitled"))}
+          </span>
+          <ArrowRight className="mt-0.5 size-4 shrink-0 -translate-x-1 text-primary opacity-0 transition-all duration-200 ease-out group-hover:translate-x-0 group-hover:opacity-100" />
+        </div>
         <span className="text-xs text-muted-foreground">{statusMeta(material, t, tDownloadStatus, locale)}</span>
       </div>
     </a>

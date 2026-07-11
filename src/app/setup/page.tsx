@@ -31,7 +31,7 @@ export default async function SetupPage({
 
   return (
     <div className="flex flex-1 items-center justify-center bg-background px-6 py-12">
-      <main className="flex w-full max-w-2xl flex-col gap-8 rounded-3xl border border-border bg-card p-10">
+      <main className="flex w-full max-w-2xl flex-col gap-8 rounded-3xl bg-card p-10 shadow-lg">
         <div className="flex flex-col gap-2">
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             {t("title")}
@@ -141,7 +141,7 @@ export default async function SetupPage({
                 type="text"
                 required
                 placeholder="000000000000-xxxxxxxx.apps.googleusercontent.com"
-                className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
+                className="rounded-lg bg-card px-3 py-2 text-sm text-foreground shadow-sm outline-none transition-shadow focus:shadow-md"
               />
             </div>
 
@@ -157,7 +157,7 @@ export default async function SetupPage({
                 name="clientSecret"
                 type="password"
                 required
-                className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
+                className="rounded-lg bg-card px-3 py-2 text-sm text-foreground shadow-sm outline-none transition-shadow focus:shadow-md"
               />
             </div>
 

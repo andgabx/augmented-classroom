@@ -2,9 +2,10 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getLyceumClient } from "@/features/lyceum/server/get-lyceum-client";
 import { LyceumSessionExpiredError } from "@/features/lyceum/server/lyceum-client";
-import { COMMON_EXCLUDED_FIELDS, DynamicTable, LyceumSessionExpiredNotice, toRows } from "@/features/lyceum/components/academic-data";
+import { COMMON_EXCLUDED_FIELDS, LyceumSessionExpiredNotice, toRows } from "@/features/lyceum/components/academic-data";
+import { DynamicTable } from "@/features/lyceum/components/dynamic-table";
 
-const FALTAS_PATTERN = /falta|frequenc/i;
+const FALTAS_PATTERN = "falta|frequenc";
 const BOLETIM_EXCLUDED_FIELDS = [
   "media",
   "mediaNumerica",

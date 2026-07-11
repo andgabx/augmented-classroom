@@ -11,7 +11,7 @@ export function CourseCard({ course }: { course: Course }) {
   const t = useTranslations("courses");
 
   return (
-    <div className="group relative flex flex-col gap-1 rounded-2xl border border-border bg-card p-4 shadow-sm transition-colors hover:bg-muted">
+    <div className="group relative flex flex-col gap-1 rounded-2xl bg-card p-4 shadow-sm transition-shadow duration-200 hover:shadow-lg">
       <Link href={`/courses/${course.id}`} className="absolute inset-0" aria-label={course.name} />
       <div className="flex flex-col gap-1 pr-32">
         <span className="text-base font-semibold text-foreground">{course.name}</span>

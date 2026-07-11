@@ -13,7 +13,7 @@ export function SignInHero() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="flex w-full max-w-lg flex-col items-center gap-8 rounded-3xl border border-border bg-card p-10 text-center shadow-sm"
+        className="flex w-full max-w-lg flex-col items-center gap-8 rounded-3xl bg-card p-10 text-center shadow-lg"
       >
         <div className="flex flex-col gap-2">
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">

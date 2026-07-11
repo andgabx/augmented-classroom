@@ -32,7 +32,7 @@ interface SidebarUser {
 const NAV_ITEMS: {
   href: string;
   key: "classes" | "downloads" | "settings";
-  icon: ComponentType<{ className?: string }>;
+  icon: ComponentType<{ className?: string; strokeWidth?: number }>;
 }[] = [
   { href: "/courses", key: "classes", icon: GraduationCap },
   { href: "/downloads", key: "downloads", icon: Download },
@@ -77,15 +77,18 @@ export function Sidebar({ user, lyceumConnected }: { user: SidebarUser; lyceumCo
       initial={false}
       animate={{ width: open ? 240 : 68 }}
       transition={{ duration: 0.2, ease: "easeInOut" }}
-      className="sticky top-0 flex h-screen shrink-0 flex-col overflow-hidden border-r border-sidebar-border bg-sidebar p-2"
+      className="sticky top-3 m-3 flex h-[calc(100vh-1.5rem)] shrink-0 flex-col rounded-2xl bg-sidebar p-2 shadow-lg"
     >
-      <div className="mb-3 flex items-center gap-2 border-b border-sidebar-border pb-3">
+      <div className="mb-3 flex items-center gap-2 border-b border-sidebar-border/60 pb-3">
         <div className="grid size-10 shrink-0 place-content-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
           <GraduationCap className="size-5" />
         </div>
         <AnimatePresence>
           {open && (
-            <motion.span {...LABEL_MOTION} className="whitespace-nowrap text-sm font-semibold text-sidebar-foreground">
+            <motion.span
+              {...LABEL_MOTION}
+              className="whitespace-nowrap text-sm font-semibold tracking-tight text-sidebar-foreground"
+            >
               Augmented Classroom
             </motion.span>
           )}
@@ -102,15 +105,18 @@ export function Sidebar({ user, lyceumConnected }: { user: SidebarUser; lyceumCo
               className={`flex h-10 items-center overflow-hidden rounded-md transition-colors ${
                 active
                   ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60"
+                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
               }`}
             >
               <div className="grid size-10 shrink-0 place-content-center">
-                <Icon className="size-5" />
+                <Icon className="size-5" strokeWidth={active ? 2.25 : 2} />
               </div>
               <AnimatePresence>
                 {open && (
-                  <motion.span {...LABEL_MOTION} className="whitespace-nowrap text-sm font-medium">
+                  <motion.span
+                    {...LABEL_MOTION}
+                    className={`whitespace-nowrap text-sm ${active ? "font-semibold" : "font-medium"}`}
+                  >
                     {tSidebar(key)}
                   </motion.span>
                 )}
@@ -126,16 +132,19 @@ export function Sidebar({ user, lyceumConnected }: { user: SidebarUser; lyceumCo
             className={`flex h-10 w-full items-center overflow-hidden rounded-md transition-colors ${
               lyceumActive
                 ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60"
+                : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
             }`}
           >
             <Link href={LYCEUM_SUBITEMS[0].href} className="grid size-10 shrink-0 place-content-center">
-              <GraduationCap className="size-5" />
+              <GraduationCap className="size-5" strokeWidth={lyceumActive ? 2.25 : 2} />
             </Link>
             <AnimatePresence>
               {open && (
                 <motion.span {...LABEL_MOTION} className="flex flex-1 items-center pr-1">
-                  <Link href={LYCEUM_SUBITEMS[0].href} className="flex-1 whitespace-nowrap text-sm font-medium">
+                  <Link
+                    href={LYCEUM_SUBITEMS[0].href}
+                    className={`flex-1 whitespace-nowrap text-sm ${lyceumActive ? "font-semibold" : "font-medium"}`}
+                  >
                     Lyceum
                   </Link>
                   <button
@@ -161,8 +170,8 @@ export function Sidebar({ user, lyceumConnected }: { user: SidebarUser; lyceumCo
                     href={href}
                     className={`flex h-9 items-center whitespace-nowrap rounded-md px-2 text-sm transition-colors ${
                       active
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60"
+                        ? "bg-sidebar-accent font-semibold text-sidebar-accent-foreground"
+                        : "font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
                     }`}
                   >
                     {tSidebar(key)}
@@ -174,7 +183,7 @@ export function Sidebar({ user, lyceumConnected }: { user: SidebarUser; lyceumCo
         </div>
       )}
 
-      <div className="mt-auto flex flex-col gap-1 border-t border-sidebar-border pt-2">
+      <div className="mt-auto flex flex-col gap-1 border-t border-sidebar-border/60 pt-2">
         <div className="flex h-12 items-center overflow-hidden rounded-md px-0.5">
           <Avatar size="lg" className="shrink-0">
             <AvatarImage
@@ -187,7 +196,7 @@ export function Sidebar({ user, lyceumConnected }: { user: SidebarUser; lyceumCo
           <AnimatePresence>
             {open && (
               <motion.div {...LABEL_MOTION} className="ml-2 flex min-w-0 flex-col">
-                <span className="truncate text-xs font-medium text-sidebar-foreground">
+                <span className="truncate text-sm font-semibold text-sidebar-foreground">
                   {user.name ? shortName(user.name) : tSidebar("connected")}
                 </span>
                 <span className="truncate text-xs text-sidebar-foreground/60">{user.email}</span>
@@ -266,7 +275,7 @@ export function Sidebar({ user, lyceumConnected }: { user: SidebarUser; lyceumCo
         <button
           type="button"
           onClick={() => setOpen((value) => !value)}
-          className="flex h-10 w-full items-center overflow-hidden rounded-md border-t border-sidebar-border text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent/60"
+          className="flex h-10 w-full items-center overflow-hidden rounded-md text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent/60"
         >
           <div className="grid size-10 shrink-0 place-content-center">
             <ChevronsRight className={`size-5 transition-transform ${open ? "rotate-180" : ""}`} />

@@ -33,7 +33,7 @@ export function CoursesView({ active, archived }: { active: Course[]; archived: 
           {t("active", { count: active.length })}
         </h2>
         {active.length === 0 ? (
-          <div className="flex flex-col items-start gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
+          <div className="flex flex-col items-start gap-3 rounded-2xl bg-card p-4 shadow-sm">
             <div className="flex flex-col gap-1">
               <p className="text-sm text-foreground">{t("noActiveClasses")}</p>
               <p className="text-sm text-muted-foreground">{t("noActiveClassesHint")}</p>

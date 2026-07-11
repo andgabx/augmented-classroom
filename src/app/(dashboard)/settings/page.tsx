@@ -33,7 +33,7 @@ export default async function SettingsPage({
     <>
       <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("title")}</h1>
 
-      <section className="flex max-w-xl flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <section className="flex max-w-xl flex-col gap-4 rounded-2xl bg-card p-6 shadow-sm">
         <div className="flex items-center gap-3">
           <GraduationCap className="size-8 text-foreground" />
           <div className="flex flex-col gap-1">
@@ -72,7 +72,7 @@ export default async function SettingsPage({
                   required
                   defaultValue={connection?.tenant}
                   placeholder={t("tenantPlaceholder")}
-                  className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring"
+                  className="rounded-lg bg-card px-3 py-2 text-sm text-foreground shadow-sm outline-none transition-shadow focus:shadow-md"
                 />
                 <p className="text-xs text-muted-foreground">{t("tenantHint")}</p>
               </div>

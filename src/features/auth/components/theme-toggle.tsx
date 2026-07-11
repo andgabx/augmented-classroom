@@ -4,12 +4,7 @@ import { useTheme } from "next-themes";
 import { AnimatePresence, motion } from "motion/react";
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { StaggeredDropdown, StaggeredDropdownItem } from "@/components/ui/staggered-dropdown";
 
 const LABEL_MOTION = {
   initial: { opacity: 0, y: 8 },
@@ -30,29 +25,30 @@ export function ThemeToggle({ open }: { open: boolean }) {
   const current = THEME_OPTIONS.find((option) => option.value === theme) ?? THEME_OPTIONS[2];
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        className="flex h-10 w-full items-center overflow-hidden rounded-md text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent/60"
-      >
-        <div className="grid size-10 shrink-0 place-content-center">
-          <current.icon className="size-5" />
-        </div>
-        <AnimatePresence>
-          {open && (
-            <motion.span {...LABEL_MOTION} className="whitespace-nowrap text-sm font-medium">
-              {t(current.key)}
-            </motion.span>
-          )}
-        </AnimatePresence>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" side="right">
-        {THEME_OPTIONS.map(({ value, icon: OptionIcon, key }) => (
-          <DropdownMenuItem key={value} onClick={() => setTheme(value)}>
-            <OptionIcon className="size-4" />
-            {t(key)}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <StaggeredDropdown
+      side="right"
+      align="start"
+      triggerClassName="h-10 w-full overflow-hidden rounded-md text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent/60"
+      trigger={
+        <>
+          <div className="grid size-10 shrink-0 place-content-center">
+            <current.icon className="size-5" />
+          </div>
+          <AnimatePresence>
+            {open && (
+              <motion.span {...LABEL_MOTION} className="whitespace-nowrap text-sm font-medium">
+                {t(current.key)}
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </>
+      }
+    >
+      {THEME_OPTIONS.map(({ value, icon: OptionIcon, key }) => (
+        <StaggeredDropdownItem key={value} icon={OptionIcon} onClick={() => setTheme(value)}>
+          {t(key)}
+        </StaggeredDropdownItem>
+      ))}
+    </StaggeredDropdown>
   );
 }
