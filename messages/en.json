@@ -6,6 +6,7 @@
   },
   "sidebar": {
     "classes": "Classes",
+    "deadlines": "Deadlines",
     "downloads": "Downloads",
     "settings": "Settings",
     "lyceumHistorico": "Academic History",
@@ -17,7 +18,6 @@
     "collapse": "Collapse",
     "themeLight": "Light",
     "themeDark": "Dark",
-    "themeSystem": "System",
     "clearCredentials": "Clear credentials",
     "clearCredentialsTitle": "Clear Google credentials?",
     "clearCredentialsDescription": "This deletes the locally saved Client ID/Secret and access token. You will be signed out now and will need to redo the Google credentials setup to use the app again. Classes and materials already synced remain in the local database.",
@@ -50,7 +50,42 @@
     "materialsCount": "Materials ({count})",
     "tabDocumentos": "Documents",
     "tabPrazos": "Tasks/Deadlines",
-    "tabPrazosComingSoon": "Coming soon."
+    "tabFeed": "Feed"
+  },
+  "deadlines": {
+    "title": "Deadlines",
+    "searchPlaceholder": "Search by name",
+    "empty": "No pending deadlines.",
+    "untitled": "Untitled",
+    "sync": "Sync",
+    "syncing": "Syncing...",
+    "syncSuccess": "Deadlines synced with Classroom.",
+    "syncError": "Couldn't sync your deadlines. Try again.",
+    "backToDeadlines": "Back to deadlines",
+    "status": "Status",
+    "statusTurnedIn": "Turned in",
+    "statusTurnedInLate": "Turned in late",
+    "statusMissing": "Missing",
+    "statusPending": "Pending",
+    "mySubmission": "My submission"
+  },
+  "feed": {
+    "title": "Feed",
+    "empty": "No posts yet.",
+    "untitled": "Untitled",
+    "searchPlaceholder": "Search by name",
+    "category": "Category",
+    "categoryTarefa": "Assignments",
+    "categoryPergunta": "Questions",
+    "categoryMaterial": "Materials",
+    "categoryAviso": "Announcements",
+    "attachments": "Attachments",
+    "filterAllAttachments": "All",
+    "filterHasAttachment": "With attachment",
+    "filterNoAttachment": "Without attachment",
+    "topic": "Topic",
+    "allTopics": "All",
+    "attachmentsCount": "{count, plural, one {# attachment} other {# attachments}}"
   },
   "materials": {
     "categoryTarefa": "Assignments",
@@ -145,7 +180,6 @@
   "lyceumAcademico": {
     "historicoTitle": "Academic History",
     "boletimTitle": "Grades",
-    "disciplinasTitle": "Courses",
     "notasTitle": "Grades",
     "notaAv1": "AV1/SR1",
     "notaAv2": "AV2/SR2",

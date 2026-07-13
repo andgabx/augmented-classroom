@@ -25,6 +25,7 @@ const selectTeachersByCourse = db.prepare(`
 const selectPendingCount = db.prepare(`
   SELECT COUNT(*) as count FROM posts
   WHERE course_id = ? AND category = 'TAREFA' AND state = 'PUBLISHED' AND due_date >= date('now')
+    AND (submission_state IS NULL OR submission_state NOT IN ('TURNED_IN', 'RETURNED'))
 `);
 
 function getPendingCount(courseId: string): number {

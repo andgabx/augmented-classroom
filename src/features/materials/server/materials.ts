@@ -1,12 +1,14 @@
 import { db } from "@/lib/db";
 import { getClassroomClient, getDriveClient } from "@/lib/classroom";
 import { indexCourseMaterialsContent } from "@/features/materials/server/index-content";
+import { searchPosts, upsertPostSearchEntry } from "@/lib/search-posts";
 import type { classroom_v1 } from "googleapis";
 import type {
   FileTypeGroup,
   MaterialListItem,
   MaterialType,
   PostCategory,
+  SubmissionAttachment,
   Topic,
 } from "@/features/materials/types/post";
 
@@ -109,7 +111,7 @@ async function syncCourseWork(classroom: classroom_v1.Classroom, courseId: strin
         courseId,
         "TAREFA",
         work.title ?? null,
-        null,
+        work.description ?? null,
         work.state,
         work.workType ?? null,
         formatDate(work.dueDate),
@@ -120,6 +122,68 @@ async function syncCourseWork(classroom: classroom_v1.Classroom, courseId: strin
         work.updateTime ?? null
       );
       upsertMaterials(work.id, work.materials);
+      upsertPostSearchEntry({
+        id: work.id,
+        courseId,
+        category: "TAREFA",
+        title: work.title ?? null,
+        text: work.description ?? null,
+      });
+    }
+
+    pageToken = data.nextPageToken ?? undefined;
+  } while (pageToken);
+}
+
+const setSubmissionState = db.prepare(`UPDATE posts SET submission_state = ?, late = ? WHERE id = ?`);
+
+const upsertSubmissionAttachment = db.prepare(`
+  INSERT INTO submission_attachments (id, post_id, type, drive_file_id, title, alternate_link, thumbnail_url)
+  VALUES (?, ?, ?, ?, ?, ?, ?)
+  ON CONFLICT(id) DO UPDATE SET
+    type = excluded.type,
+    drive_file_id = excluded.drive_file_id,
+    title = excluded.title,
+    alternate_link = excluded.alternate_link,
+    thumbnail_url = excluded.thumbnail_url
+`);
+
+const deleteSubmissionAttachments = db.prepare(`DELETE FROM submission_attachments WHERE post_id = ?`);
+
+function upsertSubmissionAttachments(postId: string, attachments: classroom_v1.Schema$Attachment[] | undefined) {
+  deleteSubmissionAttachments.run(postId);
+  attachments?.forEach((attachment, index) => {
+    const id = `${postId}:${index}`;
+
+    if (attachment.driveFile) {
+      const file = attachment.driveFile;
+      upsertSubmissionAttachment.run(id, postId, "DRIVE_FILE", file.id ?? null, file.title ?? null, file.alternateLink ?? null, file.thumbnailUrl ?? null);
+    } else if (attachment.youTubeVideo) {
+      const video = attachment.youTubeVideo;
+      upsertSubmissionAttachment.run(id, postId, "YOUTUBE", null, video.title ?? null, video.alternateLink ?? null, video.thumbnailUrl ?? null);
+    } else if (attachment.link) {
+      const link = attachment.link;
+      upsertSubmissionAttachment.run(id, postId, "LINK", null, link.title ?? null, link.url ?? null, link.thumbnailUrl ?? null);
+    } else {
+      upsertSubmissionAttachment.run(id, postId, "OTHER", null, attachment.form?.title ?? null, attachment.form?.formUrl ?? null, attachment.form?.thumbnailUrl ?? null);
+    }
+  });
+}
+
+async function syncStudentSubmissions(classroom: classroom_v1.Classroom, courseId: string) {
+  let pageToken: string | undefined;
+  do {
+    const { data } = await classroom.courses.courseWork.studentSubmissions.list({
+      courseId,
+      courseWorkId: "-",
+      userId: "me",
+      pageToken,
+    });
+
+    for (const submission of data.studentSubmissions ?? []) {
+      if (!submission.courseWorkId || !submission.state) continue;
+      setSubmissionState.run(submission.state, submission.late ? 1 : 0, submission.courseWorkId);
+      upsertSubmissionAttachments(submission.courseWorkId, submission.assignmentSubmission?.attachments);
     }
 
     pageToken = data.nextPageToken ?? undefined;
@@ -154,6 +218,13 @@ async function syncCourseWorkMaterials(classroom: classroom_v1.Classroom, course
         material.updateTime ?? null
       );
       upsertMaterials(material.id, material.materials);
+      upsertPostSearchEntry({
+        id: material.id,
+        courseId,
+        category: "MATERIAL",
+        title: material.title ?? null,
+        text: null,
+      });
     }
 
     pageToken = data.nextPageToken ?? undefined;
@@ -188,6 +259,13 @@ async function syncAnnouncements(classroom: classroom_v1.Classroom, courseId: st
         announcement.updateTime ?? null
       );
       upsertMaterials(announcement.id, announcement.materials);
+      upsertPostSearchEntry({
+        id: announcement.id,
+        courseId,
+        category: "AVISO",
+        title: null,
+        text: announcement.text ?? null,
+      });
     }
 
     pageToken = data.nextPageToken ?? undefined;
@@ -230,6 +308,7 @@ export async function syncCourseMaterials(courseId: string, redirectUri: string)
 
   await syncTopics(classroom, courseId);
   await syncCourseWork(classroom, courseId);
+  await syncStudentSubmissions(classroom, courseId);
   await syncCourseWorkMaterials(classroom, courseId);
   await syncAnnouncements(classroom, courseId);
   await resolveMimeTypes(courseId, redirectUri);
@@ -320,20 +399,11 @@ function toMaterialListItem(row: MaterialRow): MaterialListItem {
   };
 }
 
-// ponytail: wraps each term in quotes (doubling internal quotes) so user input
-// can never trigger FTS5 MATCH operators like *, -, :.
-function escapeFtsQuery(query: string): string | null {
-  const terms = query
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((term) => `"${term.replace(/"/g, '""')}"`);
-  return terms.length ? terms.join(" ") : null;
-}
-
 export interface ListCourseMaterialsFilter {
   category?: PostCategory[];
   fileType?: FileTypeGroup[];
   topicId?: string;
+  postId?: string;
   query?: string;
   dateFrom?: string;
   dateTo?: string;
@@ -354,16 +424,15 @@ export function listCourseMaterials(
     conditions.push("p.topic_id = ?");
     params.push(filter.topicId);
   }
+  if (filter.postId) {
+    conditions.push("p.id = ?");
+    params.push(filter.postId);
+  }
   if (filter.query) {
-    const ftsQuery = escapeFtsQuery(filter.query);
-    conditions.push(
-      ftsQuery
-        ? "(m.title LIKE ? OR p.title LIKE ? OR p.text LIKE ? OR m.id IN (SELECT material_id FROM material_content_fts WHERE material_content_fts MATCH ?))"
-        : "(m.title LIKE ? OR p.title LIKE ? OR p.text LIKE ?)"
-    );
-    const like = `%${filter.query}%`;
-    params.push(like, like, like);
-    if (ftsQuery) params.push(ftsQuery);
+    const matchingPostIds = searchPosts({ query: filter.query, courseId, category: filter.category });
+    if (matchingPostIds.length === 0) return [];
+    conditions.push(`p.id IN (${matchingPostIds.map(() => "?").join(",")})`);
+    params.push(...matchingPostIds);
   }
   if (filter.dateFrom) {
     conditions.push("date(p.creation_time) >= ?");
@@ -390,4 +459,30 @@ export function listCourseMaterials(
 
   const fileTypes = new Set(filter.fileType);
   return items.filter((item) => fileTypes.has(item.fileType));
+}
+
+interface SubmissionAttachmentRow {
+  id: string;
+  post_id: string;
+  type: MaterialType;
+  drive_file_id: string | null;
+  title: string | null;
+  alternate_link: string | null;
+  thumbnail_url: string | null;
+}
+
+export function listSubmissionAttachments(postId: string): SubmissionAttachment[] {
+  const rows = db
+    .prepare(`SELECT id, post_id, type, drive_file_id, title, alternate_link, thumbnail_url FROM submission_attachments WHERE post_id = ?`)
+    .all(postId) as unknown as SubmissionAttachmentRow[];
+
+  return rows.map((row) => ({
+    id: row.id,
+    postId: row.post_id,
+    type: row.type,
+    driveFileId: row.drive_file_id,
+    title: row.title,
+    alternateLink: row.alternate_link,
+    thumbnailUrl: row.thumbnail_url,
+  }));
 }

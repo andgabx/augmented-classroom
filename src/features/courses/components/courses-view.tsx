@@ -8,7 +8,17 @@ import { CourseGridCard } from "@/features/courses/components/course-grid-card";
 import { SyncCoursesButton } from "@/features/courses/components/sync-courses-button";
 import type { Course } from "@/features/courses/types/course";
 
-export function CoursesView({ active, archived }: { active: Course[]; archived: Course[] }) {
+export function CoursesView({
+  header,
+  filters,
+  active,
+  archived,
+}: {
+  header: React.ReactNode;
+  filters: React.ReactNode;
+  active: Course[];
+  archived: Course[];
+}) {
   const t = useTranslations("courses");
   const [view, setView] = useState<ViewMode>("list");
 
@@ -26,7 +36,11 @@ export function CoursesView({ active, archived }: { active: Course[]; archived: 
 
   return (
     <>
-      <ViewToggle value={view} onChange={setView} />
+      <div className="sticky top-0 z-10 flex flex-col gap-3 bg-background py-3">
+        {header}
+        {filters}
+        <ViewToggle value={view} onChange={setView} />
+      </div>
 
       <section className="flex flex-col gap-3">
         <h2 className="text-sm font-semibold text-muted-foreground">

@@ -22,6 +22,16 @@ export interface Material {
   mimeType: string | null;
 }
 
+export interface SubmissionAttachment {
+  id: string;
+  postId: string;
+  type: MaterialType;
+  driveFileId: string | null;
+  title: string | null;
+  alternateLink: string | null;
+  thumbnailUrl: string | null;
+}
+
 export interface Post {
   id: string;
   courseId: string;

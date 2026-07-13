@@ -1,7 +1,7 @@
 import { DatabaseSync } from "node:sqlite";
 import path from "node:path";
 
-const dbPath = path.join(process.cwd(), "augmented-classroom.db");
+const dbPath = process.env.DB_PATH ?? path.join(process.cwd(), "augmented-classroom.db");
 
 // Next.js's build step imports this module from multiple parallel workers
 // while collecting page data; the timeout option applies a busy_timeout
@@ -88,6 +88,16 @@ db.exec(`
     mime_type TEXT
   );
 
+  CREATE TABLE IF NOT EXISTS submission_attachments (
+    id TEXT PRIMARY KEY,
+    post_id TEXT NOT NULL,
+    type TEXT NOT NULL,
+    drive_file_id TEXT,
+    title TEXT,
+    alternate_link TEXT,
+    thumbnail_url TEXT
+  );
+
   CREATE TABLE IF NOT EXISTS downloads (
     material_id TEXT PRIMARY KEY,
     status TEXT NOT NULL,
@@ -111,7 +121,18 @@ db.exec(`
     updated_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
-  CREATE VIRTUAL TABLE IF NOT EXISTS material_content_fts USING fts5(material_id UNINDEXED, content);
+  CREATE TABLE IF NOT EXISTS migrations (
+    name TEXT PRIMARY KEY
+  );
+
+  CREATE VIRTUAL TABLE IF NOT EXISTS post_search_fts USING fts5(
+    post_id UNINDEXED, course_id UNINDEXED, category UNINDEXED,
+    title, body, content
+  );
+
+  CREATE TABLE IF NOT EXISTS indexed_materials (
+    material_id TEXT PRIMARY KEY
+  );
 `);
 
 // Next.js's build step imports this module from multiple parallel workers,
@@ -130,3 +151,59 @@ function addColumnIfMissing(table: string, column: string, definition: string) {
 addColumnIfMissing("courses", "period_id", "TEXT REFERENCES periods(id)");
 addColumnIfMissing("courses", "period_manual", "INTEGER NOT NULL DEFAULT 0");
 addColumnIfMissing("courses", "owner_id", "TEXT");
+addColumnIfMissing("posts", "submission_state", "TEXT");
+addColumnIfMissing("posts", "late", "INTEGER NOT NULL DEFAULT 0");
+
+interface LegacyPostRow {
+  id: string;
+  course_id: string;
+  category: string;
+  title: string | null;
+  text: string | null;
+}
+
+// Same worker-concurrency situation as addColumnIfMissing above: the INSERT's
+// UNIQUE constraint on migrations.name is the atomic claim, so only one
+// worker ever runs `migrate`.
+function runOnce(name: string, migrate: () => void) {
+  try {
+    db.prepare(`INSERT INTO migrations (name) VALUES (?)`).run(name);
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("UNIQUE constraint failed")) return;
+    throw error;
+  }
+  migrate();
+}
+
+runOnce("post_search_fts_backfill", () => {
+  const hasOldFts = Boolean(
+    db.prepare(`SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'material_content_fts'`).get()
+  );
+
+  const contentByPost = new Map<string, string>();
+  if (hasOldFts) {
+    const rows = db
+      .prepare(
+        `SELECT materials.post_id as post_id, material_content_fts.content as content, material_content_fts.material_id as material_id
+         FROM material_content_fts JOIN materials ON materials.id = material_content_fts.material_id`
+      )
+      .all() as unknown as { post_id: string; content: string; material_id: string }[];
+
+    const markIndexed = db.prepare(`INSERT OR IGNORE INTO indexed_materials (material_id) VALUES (?)`);
+    for (const row of rows) {
+      const existing = contentByPost.get(row.post_id);
+      contentByPost.set(row.post_id, existing ? `${existing}\n${row.content}` : row.content);
+      markIndexed.run(row.material_id);
+    }
+  }
+
+  const posts = db.prepare(`SELECT id, course_id, category, title, text FROM posts`).all() as unknown as LegacyPostRow[];
+  const insertEntry = db.prepare(
+    `INSERT INTO post_search_fts (post_id, course_id, category, title, body, content) VALUES (?, ?, ?, ?, ?, ?)`
+  );
+  for (const post of posts) {
+    insertEntry.run(post.id, post.course_id, post.category, post.title ?? "", post.text ?? "", contentByPost.get(post.id) ?? "");
+  }
+
+  if (hasOldFts) db.exec(`DROP TABLE material_content_fts`);
+});

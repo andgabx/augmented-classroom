@@ -2,22 +2,24 @@ import { PDFParse } from "pdf-parse";
 import { db } from "@/lib/db";
 import { getDriveClient } from "@/lib/classroom";
 import { GOOGLE_EXPORT_MIME } from "@/features/downloads/server/downloads";
+import { indexPostAttachmentContent } from "@/lib/search-posts";
 
 interface PendingIndexMaterial {
   id: string;
+  post_id: string;
   drive_file_id: string;
   mime_type: string;
 }
 
 const findPendingIndexMaterials = db.prepare(`
-  SELECT m.id, m.drive_file_id, m.mime_type
+  SELECT m.id, m.post_id, m.drive_file_id, m.mime_type
   FROM materials m
   JOIN posts p ON p.id = m.post_id
   WHERE p.course_id = ? AND m.type = 'DRIVE_FILE' AND m.mime_type IN ('application/pdf', 'application/vnd.google-apps.document', 'application/vnd.google-apps.presentation')
-    AND m.id NOT IN (SELECT material_id FROM material_content_fts)
+    AND m.id NOT IN (SELECT material_id FROM indexed_materials)
 `);
 
-const insertContent = db.prepare(`INSERT INTO material_content_fts (material_id, content) VALUES (?, ?)`);
+const markMaterialIndexed = db.prepare(`INSERT OR IGNORE INTO indexed_materials (material_id) VALUES (?)`);
 
 async function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
   const chunks: Buffer[] = [];
@@ -45,6 +47,7 @@ export async function indexCourseMaterialsContent(courseId: string, redirectUri:
     const { text } = await parser.getText();
     await parser.destroy();
 
-    insertContent.run(material.id, text);
+    indexPostAttachmentContent(material.post_id, text);
+    markMaterialIndexed.run(material.id);
   }
 }

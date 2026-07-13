@@ -53,17 +53,31 @@ function statusMeta(
   return parts.join(" · ");
 }
 
-export function MaterialsView({ materials }: { materials: MaterialWithStatus[] }) {
+export function MaterialsView({
+  materials,
+  filters,
+}: {
+  materials: MaterialWithStatus[];
+  filters?: React.ReactNode;
+}) {
   const t = useTranslations("materials");
   const [view, setView] = useState<ViewMode>("list");
 
   if (materials.length === 0) {
-    return <p className="text-sm text-muted-foreground">{t("noResults")}</p>;
+    return (
+      <>
+        {filters}
+        <p className="text-sm text-muted-foreground">{t("noResults")}</p>
+      </>
+    );
   }
 
   return (
     <div className="flex flex-col gap-3">
-      <ViewToggle value={view} onChange={setView} />
+      <div className="sticky top-0 z-10 flex flex-col gap-3 bg-background py-3">
+        {filters}
+        <ViewToggle value={view} onChange={setView} />
+      </div>
 
       <ViewItems
         view={view}

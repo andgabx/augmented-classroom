@@ -4,6 +4,12 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { COURSE_TABS, type CourseTab } from "@/features/courses/types/course-tab";
 
+const TAB_LABEL_KEY: Record<CourseTab, "tabFeed" | "tabDocumentos" | "tabPrazos"> = {
+  feed: "tabFeed",
+  documentos: "tabDocumentos",
+  prazos: "tabPrazos",
+};
+
 export function CourseTabs({ active }: { active: CourseTab }) {
   const t = useTranslations("courses");
   const router = useRouter();
@@ -12,7 +18,7 @@ export function CourseTabs({ active }: { active: CourseTab }) {
 
   function goTo(tab: CourseTab) {
     const params = new URLSearchParams(searchParams.toString());
-    if (tab === "documentos") params.delete("tab");
+    if (tab === "feed") params.delete("tab");
     else params.set("tab", tab);
     const query = params.toString();
     router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
@@ -31,7 +37,7 @@ export function CourseTabs({ active }: { active: CourseTab }) {
               : "text-muted-foreground hover:text-foreground"
           }`}
         >
-          {t(tab === "documentos" ? "tabDocumentos" : "tabPrazos")}
+          {t(TAB_LABEL_KEY[tab])}
         </button>
       ))}
     </div>

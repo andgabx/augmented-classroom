@@ -6,6 +6,7 @@
   },
   "sidebar": {
     "classes": "Turmas",
+    "deadlines": "Prazos",
     "downloads": "Downloads",
     "settings": "Configurações",
     "lyceumHistorico": "Histórico Escolar",
@@ -17,7 +18,6 @@
     "collapse": "Recolher",
     "themeLight": "Claro",
     "themeDark": "Escuro",
-    "themeSystem": "Sistema",
     "clearCredentials": "Limpar credenciais",
     "clearCredentialsTitle": "Limpar credenciais do Google?",
     "clearCredentialsDescription": "Isso apaga o Client ID/Secret e o token de acesso salvos localmente. Você será desconectado agora e precisará refazer a configuração de credenciais do Google para voltar a usar o aplicativo. Turmas e materiais já sincronizados continuam no banco local.",
@@ -50,7 +50,42 @@
     "materialsCount": "Materiais ({count})",
     "tabDocumentos": "Documentos",
     "tabPrazos": "Tarefas/Prazos",
-    "tabPrazosComingSoon": "Em breve."
+    "tabFeed": "Feed"
+  },
+  "deadlines": {
+    "title": "Prazos",
+    "searchPlaceholder": "Buscar por nome",
+    "empty": "Nenhum prazo pendente.",
+    "untitled": "Sem título",
+    "sync": "Sincronizar",
+    "syncing": "Sincronizando...",
+    "syncSuccess": "Prazos sincronizados com o Classroom.",
+    "syncError": "Não foi possível sincronizar os prazos. Tente novamente.",
+    "backToDeadlines": "Voltar para prazos",
+    "status": "Status",
+    "statusTurnedIn": "Entregue",
+    "statusTurnedInLate": "Entregue com atraso",
+    "statusMissing": "Atrasada",
+    "statusPending": "Pendente",
+    "mySubmission": "Minha entrega"
+  },
+  "feed": {
+    "title": "Feed",
+    "empty": "Nenhuma publicação ainda.",
+    "untitled": "Sem título",
+    "searchPlaceholder": "Buscar por nome",
+    "category": "Categoria",
+    "categoryTarefa": "Tarefas",
+    "categoryPergunta": "Perguntas",
+    "categoryMaterial": "Materiais",
+    "categoryAviso": "Avisos",
+    "attachments": "Anexos",
+    "filterAllAttachments": "Todos",
+    "filterHasAttachment": "Com anexo",
+    "filterNoAttachment": "Sem anexo",
+    "topic": "Tópico",
+    "allTopics": "Todos",
+    "attachmentsCount": "{count, plural, one {# anexo} other {# anexos}}"
   },
   "materials": {
     "categoryTarefa": "Tarefas",
@@ -145,7 +180,6 @@
   "lyceumAcademico": {
     "historicoTitle": "Histórico Escolar",
     "boletimTitle": "Boletim",
-    "disciplinasTitle": "Disciplinas",
     "notasTitle": "Notas",
     "notaAv1": "AV1/SR1",
     "notaAv2": "AV2/SR2",
