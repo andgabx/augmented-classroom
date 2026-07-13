@@ -5,7 +5,17 @@ import { usePathname } from "next/navigation";
 import { useState, type ComponentType } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useTranslations } from "next-intl";
-import { ChevronDown, ChevronsRight, Download, GraduationCap, LogOut, Settings, Trash2 } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronsRight,
+  Download,
+  GraduationCap,
+  ListChecks,
+  LogOut,
+  Rss,
+  Settings,
+  Trash2,
+} from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 import {
   AlertDialog,
@@ -30,15 +40,20 @@ interface SidebarUser {
   picture: string | null;
 }
 
-const NAV_ITEMS: {
+type NavItem = {
   href: string;
-  key: "classes" | "downloads" | "settings";
+  key: "classes" | "feed" | "deadlines" | "downloads" | "settings";
   icon: ComponentType<{ className?: string; strokeWidth?: number }>;
-}[] = [
+};
+
+const NAV_ITEMS: NavItem[] = [
   { href: "/courses", key: "classes", icon: GraduationCap },
+  { href: "/feed", key: "feed", icon: Rss },
+  { href: "/deadlines", key: "deadlines", icon: ListChecks },
   { href: "/downloads", key: "downloads", icon: Download },
-  { href: "/settings", key: "settings", icon: Settings },
 ];
+
+const SETTINGS_ITEM: NavItem = { href: "/settings", key: "settings", icon: Settings };
 
 const LYCEUM_SUBITEMS: { href: string; key: "lyceumHistorico" | "lyceumBoletim" | "lyceumFaltas" }[] = [
   { href: "/lyceum/historico", key: "lyceumHistorico" },
@@ -60,6 +75,35 @@ export function Sidebar({ user, lyceumConnected }: { user: SidebarUser; lyceumCo
   const lyceumActive = LYCEUM_SUBITEMS.some(({ href }) => pathname === href || pathname.startsWith(`${href}/`));
   const initial = (user.name ?? user.email ?? "?").charAt(0).toUpperCase();
   const tSidebar = useTranslations("sidebar");
+
+  function renderNavItem({ href, key, icon: Icon }: NavItem) {
+    const active = pathname === href || pathname.startsWith(`${href}/`);
+    return (
+      <Link
+        key={href}
+        href={href}
+        className={`flex h-10 items-center overflow-hidden rounded-md transition-colors ${open ? "" : "justify-center"} ${
+          active
+            ? "bg-sidebar-accent text-sidebar-accent-foreground"
+            : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
+        }`}
+      >
+        <div className="grid size-10 shrink-0 place-content-center">
+          <Icon className="size-5" strokeWidth={active ? 2.25 : 2} />
+        </div>
+        <AnimatePresence>
+          {open && (
+            <motion.span
+              {...LABEL_MOTION}
+              className={`whitespace-nowrap text-sm ${active ? "font-semibold" : "font-medium"}`}
+            >
+              {tSidebar(key)}
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </Link>
+    );
+  }
 
   return (
     <motion.nav
@@ -84,36 +128,7 @@ export function Sidebar({ user, lyceumConnected }: { user: SidebarUser; lyceumCo
         </AnimatePresence>
       </div>
 
-      <div className="space-y-1">
-        {NAV_ITEMS.map(({ href, key, icon: Icon }) => {
-          const active = pathname === href || pathname.startsWith(`${href}/`);
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={`flex h-10 items-center overflow-hidden rounded-md transition-colors ${open ? "" : "justify-center"} ${
-                active
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
-              }`}
-            >
-              <div className="grid size-10 shrink-0 place-content-center">
-                <Icon className="size-5" strokeWidth={active ? 2.25 : 2} />
-              </div>
-              <AnimatePresence>
-                {open && (
-                  <motion.span
-                    {...LABEL_MOTION}
-                    className={`whitespace-nowrap text-sm ${active ? "font-semibold" : "font-medium"}`}
-                  >
-                    {tSidebar(key)}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </Link>
-          );
-        })}
-      </div>
+      <div className="space-y-1">{NAV_ITEMS.map(renderNavItem)}</div>
 
       {lyceumConnected && (
         <div className="space-y-1">
@@ -171,6 +186,8 @@ export function Sidebar({ user, lyceumConnected }: { user: SidebarUser; lyceumCo
           )}
         </div>
       )}
+
+      <div className="space-y-1">{renderNavItem(SETTINGS_ITEM)}</div>
 
       <div className="mt-auto flex flex-col gap-1 border-t border-sidebar-border/60 pt-2">
         {open ? (

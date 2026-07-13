@@ -6,6 +6,7 @@
   },
   "sidebar": {
     "classes": "Turmas",
+    "feed": "Feed",
     "deadlines": "Prazos",
     "downloads": "Downloads",
     "settings": "Configurações",

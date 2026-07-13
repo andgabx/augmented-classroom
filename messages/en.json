@@ -6,6 +6,7 @@
   },
   "sidebar": {
     "classes": "Classes",
+    "feed": "Feed",
     "deadlines": "Deadlines",
     "downloads": "Downloads",
     "settings": "Settings",
