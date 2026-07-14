@@ -1,9 +1,10 @@
 import { getTranslations } from "next-intl/server";
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, Languages } from "lucide-react";
 import { connectLyceumAction, disconnectLyceumAction } from "@/features/lyceum/server/actions";
 import { loadLyceumCredentials } from "@/features/lyceum/server/credentials";
 import { getLyceumClient } from "@/features/lyceum/server/get-lyceum-client";
 import { LyceumSessionExpiredError } from "@/features/lyceum/server/lyceum-client";
+import { LanguagePicker } from "@/features/auth/components/language-picker";
 import { Button } from "@/components/ui/button";
 
 async function getLyceumStudentInfo(): Promise<{ nome: string } | null> {
@@ -32,6 +33,18 @@ export default async function SettingsPage({
   return (
     <>
       <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">{t("title")}</h1>
+
+      <section className="flex max-w-xl flex-col gap-4 rounded-2xl bg-card p-6 shadow-sm">
+        <div className="flex items-center gap-3">
+          <Languages className="size-8 text-foreground" />
+          <div className="flex flex-col gap-1">
+            <h2 className="text-sm font-semibold text-foreground">{t("languageTitle")}</h2>
+            <p className="text-sm text-muted-foreground">{t("languageIntro")}</p>
+          </div>
+        </div>
+
+        <LanguagePicker />
+      </section>
 
       <section className="flex max-w-xl flex-col gap-4 rounded-2xl bg-card p-6 shadow-sm">
         <div className="flex items-center gap-3">
