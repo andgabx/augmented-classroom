@@ -116,4 +116,8 @@ export class LyceumApiClient {
       "#/home/boletim/notas-e-faltas"
     );
   }
+
+  getBoletos(): Promise<unknown> {
+    return this.get(`/AOnline3/apix/api/rest/financeiro/codAluno/${this.ra}/Boletos?page=0&size=1000`, "#/home/financeiro");
+  }
 }

@@ -17,6 +17,7 @@
     "lyceumHistorico": "Historial Académico",
     "lyceumBoletim": "Calificaciones",
     "lyceumFaltas": "Ausencias",
+    "lyceumBoletos": "Boletas",
     "connected": "Conectado",
     "userAvatarAlt": "Usuario",
     "signOut": "Cerrar sesión",
@@ -212,6 +213,9 @@
     "boletimCurrentOnlyNote": "Lyceum solo expone las calificaciones del semestre actual — la API del portal no tiene filtro por período.",
     "emptyData": "Sin datos.",
     "sessionExpired": "Tu sesión de Lyceum expiró. Reconéctate para seguir viendo tus datos académicos.",
-    "reconnect": "Reconectar en Configuración"
+    "reconnect": "Reconectar en Configuración",
+    "boletosTitle": "Boletas",
+    "boletosNote": "Boletas y cobros pendientes en el área financiera de Lyceum.",
+    "boletosEmptyNote": "No hay boletas pendientes."
   }
 }

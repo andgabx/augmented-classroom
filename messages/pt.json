@@ -17,6 +17,7 @@
     "lyceumHistorico": "Histórico Escolar",
     "lyceumBoletim": "Boletim",
     "lyceumFaltas": "Faltas",
+    "lyceumBoletos": "Boletos",
     "connected": "Conectado",
     "userAvatarAlt": "Usuário",
     "signOut": "Sair",
@@ -212,6 +213,9 @@
     "boletimCurrentOnlyNote": "O Lyceum só disponibiliza o boletim do semestre atual — não há filtro por período na API do portal.",
     "emptyData": "Sem dados.",
     "sessionExpired": "Sua sessão do Lyceum expirou. Reconecte para continuar vendo seus dados acadêmicos.",
-    "reconnect": "Reconectar em Configurações"
+    "reconnect": "Reconectar em Configurações",
+    "boletosTitle": "Boletos",
+    "boletosNote": "Boletos e cobranças em aberto no financeiro do Lyceum.",
+    "boletosEmptyNote": "Nenhum boleto em aberto."
   }
 }

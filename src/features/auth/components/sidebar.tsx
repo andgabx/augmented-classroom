@@ -52,10 +52,11 @@ const NAV_ITEMS: NavItem[] = [
 
 const SETTINGS_ITEM: NavItem = { href: "/settings", key: "settings", icon: Settings };
 
-const LYCEUM_SUBITEMS: { href: string; key: "lyceumHistorico" | "lyceumBoletim" | "lyceumFaltas" }[] = [
+const LYCEUM_SUBITEMS: { href: string; key: "lyceumHistorico" | "lyceumBoletim" | "lyceumFaltas" | "lyceumBoletos" }[] = [
   { href: "/lyceum/historico", key: "lyceumHistorico" },
   { href: "/lyceum/boletim", key: "lyceumBoletim" },
   { href: "/lyceum/faltas", key: "lyceumFaltas" },
+  { href: "/lyceum/boletos", key: "lyceumBoletos" },
 ];
 
 const SIDEBAR_TRANSITION = { duration: 0.12, ease: [0.16, 1, 0.3, 1] } as const;

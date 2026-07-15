@@ -17,6 +17,7 @@
     "lyceumHistorico": "Akademische Historie",
     "lyceumBoletim": "Noten",
     "lyceumFaltas": "Fehlzeiten",
+    "lyceumBoletos": "Rechnungen",
     "connected": "Verbunden",
     "userAvatarAlt": "Benutzer",
     "signOut": "Abmelden",
@@ -212,6 +213,9 @@
     "boletimCurrentOnlyNote": "Lyceum zeigt nur die Noten des aktuellen Semesters — die Portal-API hat keinen Zeitraumfilter.",
     "emptyData": "Keine Daten.",
     "sessionExpired": "Deine Lyceum-Sitzung ist abgelaufen. Verbinde dich erneut, um weiterhin deine akademischen Daten zu sehen.",
-    "reconnect": "In den Einstellungen erneut verbinden"
+    "reconnect": "In den Einstellungen erneut verbinden",
+    "boletosTitle": "Rechnungen",
+    "boletosNote": "Offene Rechnungen und Forderungen aus der Finanzabteilung von Lyceum.",
+    "boletosEmptyNote": "Keine offenen Rechnungen."
   }
 }
